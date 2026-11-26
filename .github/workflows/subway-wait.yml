@@ -15,7 +15,7 @@ concurrency:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,17 +30,25 @@ jobs:
           key: subway-static-${{ github.run_id }}
           restore-keys: subway-static-
       - run: pip install gtfs-realtime-bindings
-      - name: Build snapshot
-        run: python scripts/update_subway_wait.py "$RUNNER_TEMP/subway-wait.json" --cache-dir .cache
-      - name: Publish snapshot to the subway-wait-data branch
+      - name: Take a snapshot every minute for about four minutes
         env:
           GIT_AUTHOR_NAME: github-actions[bot]
           GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
           GIT_COMMITTER_NAME: github-actions[bot]
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
         run: |
-          set -euo pipefail
-          blob=$(git hash-object -w "$RUNNER_TEMP/subway-wait.json")
-          tree=$(printf '100644 blob %s\tsubway-wait.json\n' "$blob" | git mktree)
-          commit=$(git commit-tree "$tree" -m "Subway wait snapshot")
-          git push --force origin "$commit:refs/heads/subway-wait-data"
+          published=0
+          for i in 1 2 3 4; do
+            start=$SECONDS
+            if python scripts/update_subway_wait.py "$RUNNER_TEMP/subway-wait.json" --cache-dir .cache \
+               && bash scripts/publish_snapshot.sh "$RUNNER_TEMP/subway-wait.json"; then
+              published=$((published+1))
+            else
+              echo "::warning::snapshot $i failed; the previous one stays up until it expires"
+            fi
+            if [ "$i" -lt 4 ]; then
+              elapsed=$((SECONDS-start)); [ "$elapsed" -lt 60 ] && sleep $((60-elapsed))
+            fi
+          done
+          echo "published $published of 4"
+          [ "$published" -gt 0 ]

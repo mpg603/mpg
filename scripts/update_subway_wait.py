@@ -21,6 +21,7 @@ MIN_DIRECTIONAL_STOPS = 300 # fewer predicted platforms than this = coverage fai
 PAST_GRACE = 90             # seconds a past prediction still counts (train dwelling at platform)
 MAX_HORIZON = 2 * 3600      # ignore predictions further out than this (garbage guard)
 FETCH_TRIES = 3
+STATIC_MAX_AGE = 24 * 3600  # re-download station names at most once a day
 SKIP_TRIP = {3, 6, 7}       # CANCELED, DUPLICATED, DELETED
 SKIP_STOP = {1, 2}          # SKIPPED, NO_DATA
 
@@ -46,6 +47,12 @@ def load_static(cache_dir):
     """Return ({stop_id: name}, {trip suffix: headsign}). Falls back to the cached copy."""
     cache = pathlib.Path(cache_dir) / "static_subway.json"
     try:
+        d = json.loads(cache.read_text())
+        if time.time() - d.get("fetched", 0) < STATIC_MAX_AGE:   # fresh enough: skip the 5 MB download
+            return d["stops"], d["heads"]
+    except Exception:  # noqa: BLE001
+        pass
+    try:
         z = zipfile.ZipFile(io.BytesIO(fetch(STATIC_URL)))
         rows = lambda n: csv.DictReader(io.TextIOWrapper(z.open(n), encoding="utf-8-sig"))
         stops = {r["stop_id"]: r["stop_name"] for r in rows("stops.txt")}
@@ -56,7 +63,7 @@ def load_static(cache_dir):
         if len(stops) < 400:
             raise RuntimeError("static stops.txt unexpectedly small")
         cache.parent.mkdir(parents=True, exist_ok=True)
-        cache.write_text(json.dumps({"stops": stops, "heads": heads}))
+        cache.write_text(json.dumps({"stops": stops, "heads": heads, "fetched": int(time.time())}))
         return stops, heads
     except Exception as e:  # noqa: BLE001
         log("static download failed, trying cache:", e)
