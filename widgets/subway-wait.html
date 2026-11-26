@@ -20,6 +20,9 @@
 /* caption set in the same ink and size as the destination lines, with a rule under it like the rows, so it reads as part of the board */
 .sw-sub{font:400 clamp(11px,3.3cqw,16px)/1.25 var(--swf);color:#444;margin:clamp(2px,.8cqw,5px) auto 0;padding:0 clamp(12px,4.5cqw,24px) clamp(10px,3cqw,16px);text-wrap:balance;position:relative}
 .sw-sub::after{content:"";position:absolute;bottom:0;left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:1px;background:#111}
+/* rule between the last train and the "Updated" line, only when train rows are showing */
+.sw-list:not([hidden])+.sw-s{position:relative;margin-top:clamp(4px,1.6cqw,9px);padding-top:clamp(9px,2.9cqw,15px)}
+.sw-list:not([hidden])+.sw-s::before{content:"";position:absolute;top:0;left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:1px;background:#111}
 </style></head><body>
 <section class="sw" id="sw" aria-labelledby="sw-t">
 <div class="sw-screen">
