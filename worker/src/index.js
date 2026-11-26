@@ -17,7 +17,7 @@ async function dispatch(env) {
       Authorization: `Bearer ${env.GH_TOKEN}`,
       Accept: "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
-      "User-Agent": "subway-trigger",
+      "User-Agent": "subway-update",
     },
     body: JSON.stringify({ ref: env.GH_REF }),
   });
