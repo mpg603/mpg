@@ -1,19 +1,18 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Worst NYC Subway Wait</title><style>html,body{margin:0;background:transparent}body{display:flex;justify-content:center}.sw{--swf:"Helvetica Neue",Helvetica,Arial,sans-serif;font-family:var(--swf);color:#111;background:var(--card,#FAF7ED);border:1px solid var(--line,#E6E1D2);border-radius:16px;width:max-content;min-width:290px;max-width:100%;padding:14px 20px 13px;text-align:center;box-sizing:border-box}
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Worst NYC Subway Wait</title><style>html,body{margin:0;background:transparent}body{display:flex;justify-content:center}.sw{--swf:"Helvetica Neue",Helvetica,Arial,sans-serif;font-family:var(--swf);color:#111;background:#fff;border:1px solid var(--line,#E6E1D2);border-radius:16px;width:100%;max-width:520px;padding:16px 24px 15px;text-align:center;box-sizing:border-box;container-type:inline-size}
 .sw *{box-sizing:border-box}
-.sw-t{font:700 14px/1.1 var(--swf);letter-spacing:.03em;text-transform:uppercase;margin:0 0 12px;white-space:nowrap;color:#111}
-.sw-row{display:flex;justify-content:center;align-items:center;gap:8px;text-align:left}
-.sw-bul{width:36px;height:36px;flex:0 0 36px;display:block}
+.sw-t{font:700 clamp(12px,3.6cqw,17px)/1.1 var(--swf);letter-spacing:.03em;text-transform:uppercase;margin:0 0 clamp(10px,3.2cqw,16px);white-space:nowrap;color:#111}
+.sw-row{display:flex;justify-content:center;align-items:center;gap:clamp(7px,2.2cqw,12px);text-align:left}
+.sw-bul{width:clamp(34px,10cqw,50px);height:clamp(34px,10cqw,50px);flex:none;display:block}
 .sw-bul text{font-family:var(--swf);font-weight:700;text-anchor:middle}
-.sw-place{min-width:0;max-width:180px;overflow-wrap:anywhere;line-height:1.14}
-.sw-st{font:600 16px/1.14 var(--swf);color:#111}
-.sw-de{font:400 12px/1.2 var(--swf);color:#444;margin-top:2px}
+.sw-place{min-width:0;max-width:clamp(110px,52cqw,250px);overflow-wrap:anywhere;line-height:1.14}
+.sw-st{font:600 clamp(15px,4.8cqw,22px)/1.14 var(--swf);color:#111}
+.sw-de{font:400 clamp(11px,3cqw,14px)/1.2 var(--swf);color:#444;margin-top:3px}
 .sw-wait{display:flex;align-items:baseline;gap:2px;white-space:nowrap;line-height:1;font-variant-numeric:tabular-nums;margin-left:2px}
-.sw-n{font:700 30px/1 var(--swf);letter-spacing:-.01em}
-.sw-u{font:400 14px/1 var(--swf);color:#222}
-.sw-s{font:400 11px/1.2 var(--swf);color:#6f6e68;margin:9px 0 0}
+.sw-n{font:700 clamp(26px,8.6cqw,40px)/1 var(--swf);letter-spacing:-.01em}
+.sw-u{font:400 clamp(12px,3.2cqw,16px)/1 var(--swf);color:#222}
+.sw-s{font:400 clamp(10px,2.4cqw,12px)/1.2 var(--swf);color:#6f6e68;margin:clamp(9px,2.6cqw,13px) 0 0}
 .sw [hidden]{display:none!important}
-@media(max-width:340px){.sw{min-width:0;padding-inline:12px}.sw-t{font-size:12px}.sw-place{max-width:120px}}
 </style></head><body>
 <section class="sw" id="sw" aria-labelledby="sw-t">
 <h2 class="sw-t" id="sw-t">Worst NYC subway wait</h2>
