@@ -41,7 +41,7 @@ a{color:inherit}
 .sw-t{font:700 clamp(12px,3.9cqw,18px)/1.1 var(--swf);letter-spacing:.03em;text-transform:uppercase;margin:0 0 clamp(4px,1.6cqw,9px);white-space:nowrap;color:#111}
 .sw-list{list-style:none;margin:0;padding:0;text-align:left}
 .sw-list li{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:clamp(9px,3cqw,16px);padding:clamp(9px,2.9cqw,15px) clamp(2px,1cqw,6px)}
-.sw-list li+li::before{content:"";position:absolute;top:0;left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:1px;background:#111}
+.sw-list li+li::before{content:"";position:absolute;top:var(--sn,0px);left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #111}
 .sw-bul{width:clamp(38px,11.5cqw,56px);height:clamp(38px,11.5cqw,56px);flex:none;display:block}
 .sw-bul text{font-family:var(--swf);font-weight:700;text-anchor:middle}
 .sw-place{min-width:0;overflow-wrap:anywhere;line-height:1.14}
@@ -55,10 +55,10 @@ a{color:inherit}
 
 /* caption set in the same ink and size as the destination lines, with a rule under it like the rows, so it reads as part of the board */
 .sw-sub{font:400 clamp(11px,3.3cqw,16px)/1.25 var(--swf);color:#444;margin:clamp(2px,.8cqw,5px) auto 0;padding:0 clamp(12px,4.5cqw,24px) clamp(10px,3cqw,16px);text-wrap:balance;position:relative}
-.sw-sub::after{content:"";position:absolute;bottom:0;left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:1px;background:#111}
+.sw-sub::after{content:"";position:absolute;top:calc(100% + var(--sn,0px));left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #111}
 /* rule between the last train and the "Updated" line, only when train rows are showing */
 .sw-list:not([hidden])+.sw-s{position:relative;margin-top:clamp(4px,1.6cqw,9px);padding-top:clamp(9px,2.9cqw,15px)}
-.sw-list:not([hidden])+.sw-s::before{content:"";position:absolute;top:0;left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:1px;background:#111}
+.sw-list:not([hidden])+.sw-s::before{content:"";position:absolute;top:var(--sn,0px);left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #111}
 
 .shuf{all:unset;box-sizing:border-box;position:absolute;left:12px;top:8px;z-index:3;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;cursor:pointer}.shuf:hover{border-color:#c9c3ad}.shuf:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.shuf svg{width:14px;height:14px;display:block}
 .cell{position:relative;margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
@@ -169,16 +169,25 @@ function rowEl(w,min){
   wait.append(el('span','sw-n',min),el('span','sw-u','min'));
   li.append(bulletSvg(w.route),place,wait);return li;
 }
+// put every black rule on a whole device pixel, so they all draw equally dark at fractional zoom or screen scaling (otherwise some straddle two pixel rows and look lighter)
+function snapRules(){
+  const root=$('sw'),dpr=window.devicePixelRatio||1,sy=window.scrollY||0;
+  root.querySelectorAll('.sw-list li+li,.sw-sub,.sw-s').forEach(el=>{
+    const r=el.getBoundingClientRect(),y=((el.classList.contains('sw-sub')?r.bottom:r.top)+sy)*dpr,n=((Math.round(y)-y)/dpr).toFixed(3)+'px';
+    if(el.style.getPropertyValue('--sn')!==n)el.style.setProperty('--sn',n);
+  });
+}
 function render(){
   const now=Date.now()/1000,list=$('sw-list'),s=$('sw-s');
   // the three longest waits, shown soonest first like the real countdown signs; a row whose train has left drops off the top until the next snapshot
   const rows=snap?rowsOf(snap).slice().sort((a,b)=>b.departure_epoch-a.departure_epoch).slice(0,3).reverse().filter(w=>w.departure_epoch>now):[];
   const stale=!snap||now-snap.oldest_feed_epoch>MAX_FEED_AGE||snap.generated_epoch-now>CLOCK_SKEW||!rows.length;
-  if(stale){list.hidden=true;s.textContent=snap?'Subway data temporarily unavailable':(tried||!URL_?'Subway data unavailable':'Loading subway data…');shown='';return}
+  if(stale){list.hidden=true;s.textContent=snap?'Subway data temporarily unavailable':(tried||!URL_?'Subway data unavailable':'Loading subway data…');shown='';snapRules();return}
   const mins=rows.map(w=>Math.max(1,Math.ceil((w.departure_epoch-now)/60))),key=snap.generated_epoch+'|'+mins.join(',');
   if(key!==shown){shown=key;list.replaceChildren(...rows.map((w,i)=>rowEl(w,mins[i])))}
   list.hidden=false;
   s.textContent=demo?'Design preview · example data':'Updated '+Math.max(0,Math.floor((now-snap.generated_epoch)/60))+' min ago';
+  snapRules();
 }
 async function refresh(){
   if(demo||busy||!URL_)return;busy=true;
@@ -199,6 +208,7 @@ if(demo){const n=Math.floor(Date.now()/1000),q=new URLSearchParams(location.sear
     row('Q','Coney Island-Stillwell Av','96 St',14)]}}
 render();refresh();
 setInterval(refresh,REFRESH_MS);setInterval(render,1000);
+addEventListener('resize',snapRules);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(snapRules);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();refresh()}});
 })();
 </script></body></html>
