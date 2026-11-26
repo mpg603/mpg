@@ -53,6 +53,8 @@ a{color:inherit}
 .sw-s{font:400 clamp(10px,2.6cqw,13px)/1.2 var(--swf);color:#6f6e68;margin:clamp(4px,1.6cqw,9px) 0 0}
 .sw [hidden]{display:none!important}
 
+.sw-sub{font:400 clamp(10px,2.7cqw,13px)/1.25 var(--swf);color:#6f6e68;margin:0 auto clamp(6px,2.2cqw,11px);max-width:30em;text-wrap:balance}
+
 .shuf{all:unset;box-sizing:border-box;position:absolute;left:12px;top:8px;z-index:3;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;cursor:pointer}.shuf:hover{border-color:#c9c3ad}.shuf:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.shuf svg{width:14px;height:14px;display:block}
 .cell{position:relative;margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .chead{display:flex;align-items:center;justify-content:center;position:relative;padding:14px 44px 0;font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);z-index:2}
@@ -68,7 +70,8 @@ a{color:inherit}
 <div class="pair">
 <section class="sw" id="sw" aria-labelledby="sw-t">
 <div class="sw-screen">
-<h2 class="sw-t" id="sw-t">Worst NYC subway waits</h2>
+<h2 class="sw-t" id="sw-t">NYC Subwaits</h2>
+<p class="sw-sub">The three subway platforms in New York City that currently have the longest wait for the next train</p>
 <ol class="sw-list" id="sw-list" hidden></ol>
 <p class="sw-s" id="sw-s">Loading subway data…</p>
 </div>
