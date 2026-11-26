@@ -62,7 +62,7 @@ function setCols(){grid.style.setProperty('--cols',cols())}setCols();let rt;addE
 const $=id=>document.getElementById(id);
 for(let i=ITEMS.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ITEMS[i],ITEMS[j]]=[ITEMS[j],ITEMS[i]]}
 ITEMS.forEach(it=>{const c=document.createElement('div');c.className='cell'+(WIDE.includes(it.id)?' wide':'');
- const f=document.createElement('iframe');f.title=it.name;f.loading='lazy';f.src='widgets/'+it.id+'.html?embed=1';f.style.height=(H[it.id]||360)+'px';
+ const f=document.createElement('iframe');f.setAttribute('aria-label',it.name);f.loading='lazy';f.src='widgets/'+it.id+'.html?embed=1';f.style.height=(H[it.id]||360)+'px';
  f.addEventListener('load',()=>send(f));
  c.id=it.id;c.appendChild(f);grid.appendChild(c);frames.push(f)});
 addEventListener('message',e=>{const d=e.data;if(!d||d.type!=='calendar:height')return;const f=frames.find(x=>x.contentWindow===e.source);if(f){f.style.height=d.height+'px';place()}});

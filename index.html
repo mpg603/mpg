@@ -69,7 +69,7 @@ const rnd=()=>{s=(s+0x6D2B79F5)>>>0;let z=s;z=Math.imul(z^(z>>>15),z|1);z^=z+Mat
 const a=POOL.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
 const id=a[0],c=document.getElementById('cell'),to='calendars.html';
 c.innerHTML='<div class="chead">Calendar of the day <button class="hint" type="button" aria-label="About the calendar of the day" data-tip="A new calendar every day, picked at random from the collection. Tap the card to see all of them.">?</button></div>';
-const f=document.createElement('iframe');f.title=id;f.src='widgets/'+id+'.html?embed=1&dial='+DIAL;f.style.height=(H[id]||420)+'px';
+const f=document.createElement('iframe');f.setAttribute('aria-label',id);f.src='widgets/'+id+'.html?embed=1&dial='+DIAL;f.style.height=(H[id]||420)+'px';
 c.appendChild(f);addEventListener('message',e=>{if(e.source===f.contentWindow&&e.data&&e.data.type==='calendar:height')f.style.height=e.data.height+'px'});
 c.insertAdjacentHTML('beforeend','<a class="hit" href="'+to+'" aria-label="See all calendars, starting at '+id+'"></a><a class="more" href="'+to+'">See all calendars →</a>');
 </script></body></html>
