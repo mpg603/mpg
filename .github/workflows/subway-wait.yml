@@ -15,7 +15,7 @@ concurrency:
 jobs:
   snapshot:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,7 +30,7 @@ jobs:
           key: subway-static-${{ github.run_id }}
           restore-keys: subway-static-
       - run: pip install gtfs-realtime-bindings
-      - name: Take a snapshot every minute for about four minutes
+      - name: Take a snapshot every minute for about five minutes
         env:
           GIT_AUTHOR_NAME: github-actions[bot]
           GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
@@ -38,7 +38,7 @@ jobs:
           GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
         run: |
           published=0
-          for i in 1 2 3 4; do
+          for i in 1 2 3 4 5 6; do
             start=$SECONDS
             if python scripts/update_subway_wait.py "$RUNNER_TEMP/subway-wait.json" --cache-dir .cache \
                && bash scripts/publish_snapshot.sh "$RUNNER_TEMP/subway-wait.json"; then
@@ -46,9 +46,9 @@ jobs:
             else
               echo "::warning::snapshot $i failed; the previous one stays up until it expires"
             fi
-            if [ "$i" -lt 4 ]; then
+            if [ "$i" -lt 6 ]; then
               elapsed=$((SECONDS-start)); [ "$elapsed" -lt 60 ] && sleep $((60-elapsed))
             fi
           done
-          echo "published $published of 4"
+          echo "published $published of 6"
           [ "$published" -gt 0 ]
