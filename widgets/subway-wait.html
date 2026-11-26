@@ -28,7 +28,7 @@
 // ---- configuration -------------------------------------------------------
 // Leave empty on GitHub Pages: owner and repo are derived from OWNER.github.io[/REPO].
 // If the site uses a custom domain, set this to 'OWNER/REPO'.
-const REPO_OVERRIDE='';
+const REPO_OVERRIDE='mpg603/mpg';
 const BRANCH='subway-wait-data',FILE='subway-wait.json';
 const FEEDS_REQUIRED=7;      // all seven NYCT feeds must have been read
 const MAX_FEED_AGE=900;      // seconds: oldest feed timestamp older than this = unavailable
@@ -80,8 +80,8 @@ function rowEl(w,min){
 }
 function render(){
   const now=Date.now()/1000,list=$('sw-list'),s=$('sw-s');
-  // longest wait first; rows whose train has already left drop off the bottom until the next snapshot
-  const rows=snap?rowsOf(snap).slice().sort((a,b)=>b.departure_epoch-a.departure_epoch).slice(0,3).filter(w=>w.departure_epoch>now):[];
+  // the three longest waits, shown soonest first like the real countdown signs; a row whose train has left drops off the top until the next snapshot
+  const rows=snap?rowsOf(snap).slice().sort((a,b)=>b.departure_epoch-a.departure_epoch).slice(0,3).reverse().filter(w=>w.departure_epoch>now):[];
   const stale=!snap||now-snap.oldest_feed_epoch>MAX_FEED_AGE||snap.generated_epoch-now>CLOCK_SKEW||!rows.length;
   if(stale){list.hidden=true;s.textContent=snap?'Subway data temporarily unavailable':(tried||!URL_?'Subway data unavailable':'Loading subway data…');shown='';return}
   const mins=rows.map(w=>Math.max(1,Math.ceil((w.departure_epoch-now)/60))),key=snap.generated_epoch+'|'+mins.join(',');

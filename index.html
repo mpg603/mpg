@@ -95,7 +95,8 @@ const Q=[{"q": "Banking establishments are more dangerous than standing armies."
 {const b=document.getElementById('qtext');if(x.o){b.className='two';const mk=(c,txt,l)=>{const s=document.createElement('span');s.className=c;s.textContent=txt;if(l){s.lang=l;if(l==='he'||l==='ar'||l==='fa')s.dir='rtl'}return s};b.append(mk('qo','“'+x.o+'”',x.l),mk('qd','\u25C6'),mk('qe','“'+x.q+'”','en'))}else b.textContent='“'+x.q+'”'}document.getElementById('qname').textContent=x.by}
 // One calendar per local day, stepping through a fixed shuffle so none repeats until all have been shown.
 const day=Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/864e5);
-const id=POOL[((day%POOL.length)+POOL.length)%POOL.length],c=document.getElementById('cell'),to='calendars.html';
+const ymd=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10),PIN={"2026-11-26":"maya-long-count"}; // a date listed in PIN shows that calendar instead of the shuffled pick
+const id=PIN[ymd]||POOL[((day%POOL.length)+POOL.length)%POOL.length],c=document.getElementById('cell'),to='calendars.html';
 c.innerHTML='<div class="chead">Calendar of the day <button class="hint" type="button" aria-label="About the calendar of the day" data-tip="A new calendar every day, picked at random from the collection. Tap the card to see all of them, or use the shuffle button for another.">?</button></div>';
 const f=document.createElement('iframe');f.setAttribute('aria-label',id);f.src='widgets/'+id+'.html?embed=1&dial='+DIAL;f.style.height=(H[id]||420)+'px';
 c.appendChild(f);addEventListener('message',e=>{if(e.source===f.contentWindow&&e.data&&e.data.type==='calendar:height')f.style.height=e.data.height+'px'});
@@ -162,8 +163,8 @@ function rowEl(w,min){
 }
 function render(){
   const now=Date.now()/1000,list=$('sw-list'),s=$('sw-s');
-  // longest wait first; rows whose train has already left drop off the bottom until the next snapshot
-  const rows=snap?rowsOf(snap).slice().sort((a,b)=>b.departure_epoch-a.departure_epoch).slice(0,3).filter(w=>w.departure_epoch>now):[];
+  // the three longest waits, shown soonest first like the real countdown signs; a row whose train has left drops off the top until the next snapshot
+  const rows=snap?rowsOf(snap).slice().sort((a,b)=>b.departure_epoch-a.departure_epoch).slice(0,3).reverse().filter(w=>w.departure_epoch>now):[];
   const stale=!snap||now-snap.oldest_feed_epoch>MAX_FEED_AGE||snap.generated_epoch-now>CLOCK_SKEW||!rows.length;
   if(stale){list.hidden=true;s.textContent=snap?'Subway data temporarily unavailable':(tried||!URL_?'Subway data unavailable':'Loading subway data…');shown='';return}
   const mins=rows.map(w=>Math.max(1,Math.ceil((w.departure_epoch-now)/60))),key=snap.generated_epoch+'|'+mins.join(',');
