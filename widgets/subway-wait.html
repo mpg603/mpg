@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Worst NYC Subway Wait</title><style>html,body{margin:0;background:transparent}body{display:flex;justify-content:center}.sw{--swf:"Helvetica Neue",Helvetica,Arial,sans-serif;font-family:var(--swf);color:#111;background:#fff;width:max-content;max-width:100%;padding:13px 0 6px;text-align:center;box-sizing:border-box}
+.sw *{box-sizing:border-box}
+.sw-t{font:700 13px/1.1 var(--swf);letter-spacing:.03em;text-transform:uppercase;margin:0 0 9px;white-space:nowrap;color:#111}
+.sw-row{display:flex;justify-content:center;align-items:center;gap:7px;text-align:left}
+.sw-bul{width:30px;height:30px;flex:0 0 30px;display:block}
+.sw-bul text{font-family:var(--swf);font-weight:700;text-anchor:middle}
+.sw-place{min-width:0;max-width:168px;overflow-wrap:anywhere;line-height:1.14}
+.sw-st{font:600 14px/1.14 var(--swf);color:#111}
+.sw-de{font:400 11px/1.2 var(--swf);color:#444;margin-top:2px}
+.sw-wait{display:flex;align-items:baseline;gap:2px;white-space:nowrap;line-height:1;font-variant-numeric:tabular-nums;margin-left:1px}
+.sw-n{font:700 24px/1 var(--swf);letter-spacing:-.01em}
+.sw-u{font:400 13px/1 var(--swf);color:#222}
+.sw-s{font:400 10px/1.2 var(--swf);color:#6f6e68;margin:6px 0 0}
+.sw [hidden]{display:none!important}
+@media(max-width:300px){.sw-t{font-size:12px}.sw-place{max-width:120px}}
+</style></head><body>
+<section class="sw" id="sw" aria-labelledby="sw-t">
+<h2 class="sw-t" id="sw-t">Worst NYC subway wait</h2>
+<div class="sw-row" id="sw-row" role="group" hidden>
+<svg class="sw-bul" id="sw-bul" viewBox="0 0 30 30" aria-hidden="true" focusable="false"><path id="sw-shape" d=""/><text id="sw-letter" x="15" y="15" dy=".35em"></text></svg>
+<div class="sw-place"><div class="sw-st" id="sw-st"></div><div class="sw-de" id="sw-de"></div></div>
+<div class="sw-wait" aria-hidden="true"><span class="sw-n" id="sw-n"></span><span class="sw-u">min</span></div>
+</div>
+<p class="sw-s" id="sw-s">Loading subway data…</p>
+</section>
+<script>(()=>{
+// ---- configuration -------------------------------------------------------
+// Leave empty on GitHub Pages: owner and repo are derived from OWNER.github.io[/REPO].
+// If the site uses a custom domain, set this to 'OWNER/REPO'.
+const REPO_OVERRIDE='';
+const BRANCH='subway-wait-data',FILE='subway-wait.json';
+const FEEDS_REQUIRED=7;      // all seven NYCT feeds must have been read
+const MAX_FEED_AGE=900;      // seconds: oldest feed timestamp older than this = unavailable
+const CLOCK_SKEW=120;        // seconds of tolerated future-dated snapshot
+const REFRESH_MS=60000;
+// --------------------------------------------------------------------------
+const $=id=>document.getElementById(id);
+const COL={1:'#EE352E',2:'#EE352E',3:'#EE352E',4:'#00933C',5:'#00933C',6:'#00933C',7:'#B933AD',A:'#0039A6',C:'#0039A6',E:'#0039A6',B:'#FF6319',D:'#FF6319',F:'#FF6319',M:'#FF6319',G:'#6CBE45',J:'#996633',Z:'#996633',L:'#A7A9AC',N:'#FCCC0A',Q:'#FCCC0A',R:'#FCCC0A',W:'#FCCC0A',S:'#808183'};
+const DARK_TEXT=new Set(['N','Q','R','W']);
+const local=/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)||location.protocol==='file:';
+const demo=local&&new URLSearchParams(location.search).get('preview')==='1';
+function dataUrl(){
+  let slug=REPO_OVERRIDE.trim();
+  if(!slug){
+    const m=location.hostname.match(/^([^.]+)\.github\.io$/i);
+    if(!m)return null;
+    const seg=location.pathname.split('/').filter(Boolean)[0];
+    const repo=seg&&!/\.html?$/i.test(seg)?seg:m[1]+'.github.io';
+    slug=m[1]+'/'+repo;
+  }
+  return 'https://raw.githubusercontent.com/'+slug+'/'+BRANCH+'/'+FILE;
+}
+const URL_=dataUrl();
+let snap=null,busy=false,shown='',tried=false;
+const ok=d=>d&&d.schema===1&&d.winner&&d.feeds_checked===FEEDS_REQUIRED&&Number.isFinite(d.generated_epoch)&&Number.isFinite(d.oldest_feed_epoch)&&Number.isFinite(d.winner.departure_epoch)&&typeof d.winner.station==='string'&&typeof d.winner.destination==='string'&&typeof d.winner.route==='string';
+function bullet(route){
+  let r=route.toUpperCase(),exp=false;
+  if(/^[1-7A-Z]X$/.test(r)){exp=true;r=r[0]}
+  if(['GS','FS','H'].includes(r))r='S';
+  if(!COL[r])r='S';
+  return{r,exp};
+}
+function paint(w){
+  const{r,exp}=bullet(w.route),sh=$('sw-shape'),lt=$('sw-letter');
+  sh.setAttribute('d',exp?'M15 .8 29.2 15 15 29.2.8 15Z':'M15 1a14 14 0 1 0 0 28 14 14 0 0 0 0-28Z');
+  sh.setAttribute('fill',COL[r]);
+  lt.textContent=r;lt.setAttribute('fill',DARK_TEXT.has(r)?'#111':'#fff');lt.setAttribute('font-size',exp?'16':'19');
+  return r;
+}
+function render(){
+  const now=Date.now()/1000,row=$('sw-row'),s=$('sw-s');
+  const stale=!snap||now-snap.oldest_feed_epoch>MAX_FEED_AGE||snap.generated_epoch-now>CLOCK_SKEW||snap.winner.departure_epoch<=now;
+  if(stale){row.hidden=true;s.textContent=snap?'Subway data temporarily unavailable':(tried||!URL_?'Subway data unavailable':'Loading subway data…');shown='';return}
+  const w=snap.winner,min=Math.max(1,Math.ceil((w.departure_epoch-now)/60));
+  const key=snap.generated_epoch+'|'+min;
+  if(key!==shown){
+    shown=key;const r=paint(w);
+    $('sw-st').textContent=w.station;$('sw-de').textContent='To '+w.destination;$('sw-n').textContent=min;
+    row.setAttribute('aria-label',r+' train, '+w.station+', to '+w.destination+', '+min+(min===1?' minute':' minutes'));
+  }
+  row.hidden=false;
+  s.textContent=demo?'Design preview · example data':'Updated '+Math.max(0,Math.floor((now-snap.generated_epoch)/60))+' min ago';
+}
+async function refresh(){
+  if(demo||busy||!URL_)return;busy=true;
+  try{
+    const res=await fetch(URL_+'?v='+Math.floor(Date.now()/REFRESH_MS),{cache:'no-store'});
+    if(!res.ok)throw Error('HTTP '+res.status);
+    const d=await res.json();
+    if(!ok(d))throw Error('invalid snapshot');
+    if(!snap||d.generated_epoch>=snap.generated_epoch)snap=d;
+  }catch(e){console.warn('Subway snapshot unavailable:',e.message)}
+  finally{busy=false;tried=true;render()}
+}
+if(demo){const n=Math.floor(Date.now()/1000),q=new URLSearchParams(location.search);
+  snap={schema:1,feeds_checked:7,generated_epoch:n,oldest_feed_epoch:n,winner:{route:q.get('r')||'1',station:q.get('st')||'18 St',destination:q.get('to')||'South Ferry',departure_epoch:n+(+q.get('m')||19)*60}}}
+render();refresh();
+setInterval(refresh,REFRESH_MS);setInterval(render,1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();refresh()}});
+})();
+</script></body></html>
