@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Calendars</title>
+<style>
+@font-face{font-family:Lato;font-weight:400;font-style:normal;font-display:swap;src:url(fonts/lato-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Lato;font-weight:700;font-style:normal;font-display:swap;src:url(fonts/lato-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:Lato;font-weight:900;font-style:normal;font-display:swap;src:url(fonts/lato-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter Tight";font-weight:100 900;font-style:normal;font-display:swap;src:url(fonts/inter-tight-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Serif 4";font-weight:200 900;font-style:normal;font-display:swap;src:url(fonts/source-serif-4-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Serif 4";font-weight:200 900;font-style:italic;font-display:swap;src:url(fonts/source-serif-4-latin-wght-italic.woff2) format("woff2")}
+:root{--paper:#fff;--card:#FAF7ED;--ink:#171717;--muted:#6f6e68;--line:#E6E1D2;--blue:#18558C;
+ --ui:Lato,system-ui,-apple-system,"Segoe UI",sans-serif;--text:"Source Serif 4",Charter,Georgia,serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.5 var(--text)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* masthead */
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;max-width:1320px;margin:0 auto;padding:18px 20px 0}
+.mark{font:800 27px/1 "Inter Tight",var(--ui);letter-spacing:-.02em;text-decoration:none;color:#000}
+.top nav{display:flex;gap:22px}
+.top nav a{font:700 15px/1 var(--ui);text-decoration:none;padding:4px 0;border-bottom:2px solid transparent;color:var(--muted)}
+.top nav a:hover{color:var(--ink)}
+.top nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
+/* ? hints (the popover itself is drawn once, at page level, so no card can clip it) */
+.hint{all:unset;box-sizing:border-box;cursor:help;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;display:inline-grid;place-items:center;font:700 11px/1 var(--ui);color:#a7a59b;vertical-align:middle;flex:none}
+.hint:hover,.hint:focus-visible,.hint[aria-expanded=true]{color:var(--ink)}
+#tipbox{position:fixed;z-index:100;max-width:260px;background:var(--ink);color:#fff;border-radius:8px;padding:10px 12px;font:400 14px/1.4 var(--ui);box-shadow:0 6px 24px rgba(0,0,0,.18);opacity:0;visibility:hidden;transition:opacity .12s;pointer-events:none}
+#tipbox.on{opacity:1;visibility:visible}
+
+.page{max-width:1320px;margin:0 auto;padding:22px 20px 0}
+.crumb{margin:0 0 6px;font:700 13px/1 var(--ui);color:var(--muted)}.crumb a{text-decoration:none}.crumb a:hover{color:var(--ink)}
+h1{margin:0;font:900 28px/1.1 var(--ui);letter-spacing:-.01em}
+.sub{margin:6px 0 0;color:var(--muted);font-size:16px}
+.scrub{position:sticky;top:0;z-index:5;margin-top:16px;background:var(--paper);border-top:1.5px solid var(--ink);border-bottom:1px solid var(--line);padding:10px 0 8px}
+.scrub .in{max-width:1320px;margin:0 auto;padding:0 20px;display:grid;gap:4px}
+.row1{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.when{font:800 15px/1.2 var(--ui);flex:1;min-width:140px;font-variant-numeric:tabular-nums}
+button,input[type=date],input[type=time]{font:700 13px/1 var(--ui);color:var(--ink);background:var(--paper);border:1px solid #cfcabb;border-radius:8px;padding:8px 12px;cursor:pointer}
+button:hover{border-color:var(--ink)}
+button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.sl{display:grid;grid-template-columns:40px 1fr;gap:8px;align-items:center;font:700 11px/1 var(--ui);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--blue);height:24px;margin:0}
+#grid{max-width:1320px;margin:0 auto;padding:18px 20px 56px;display:grid;grid-template-columns:repeat(var(--cols,1),minmax(0,1fr));grid-auto-rows:1px;column-gap:14px;grid-auto-flow:dense}
+.cell{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;align-self:start;min-width:0}
+.cell iframe{display:block;width:100%;border:0;background:transparent}
+.cell.wide{grid-column:span 2}
+@media(max-width:559px){.cell.wide{grid-column:span 1}}
+</style></head><body>
+<header class="top"><a class="mark" href="index.html">Miguel PG</a><nav aria-label="Main"><a href="index.html">Home</a><a href="funstuff.html" aria-current="page">Fun Stuff</a></nav></header>
+<div class="page"><p class="crumb"><a href="funstuff.html">Fun Stuff</a> / Calendars</p><h1>Calendars</h1></div>
+<div class="scrub" role="group" aria-label="Time scrubber"><div class="in">
+ <div class="row1"><div class="when" id="when"></div>
+  <button id="prev" aria-label="Previous day">−1 day</button><button id="next" aria-label="Next day">+1 day</button>
+  <input type="date" id="date" aria-label="Date"><input type="time" id="tod" aria-label="Time"><button id="live" class="on">Live</button></div>
+</div></div>
+<main id="grid"></main>
+<script>
+const ITEMS=[{"id": "akan", "name": "Akan Adaduanan"}, {"id": "amazigh", "name": "Amazigh"}, {"id": "armenian", "name": "Armenian"}, {"id": "babylonian", "name": "Babylonian"}, {"id": "bahai", "name": "Baháʼí"}, {"id": "pawukon", "name": "Balinese Pawukon"}, {"id": "bengali", "name": "Bengali"}, {"id": "burmese", "name": "Burmese"}, {"id": "byzantine", "name": "Byzantine"}, {"id": "chinese", "name": "Chinese Lunisolar"}, {"id": "coptic", "name": "Coptic"}, {"id": "darian", "name": "Darian"}, {"id": "discordian", "name": "Discordian"}, {"id": "ethiopian", "name": "Ethiopian"}, {"id": "french-republican", "name": "French Republican"}, {"id": "gregorian", "name": "Gregorian"}, {"id": "hebrew", "name": "Hebrew"}, {"id": "hindu", "name": "Hindu Lunisolar"}, {"id": "saka", "name": "Indian National"}, {"id": "international-fixed", "name": "International Fixed"}, {"id": "islamic", "name": "Islamic"}, {"id": "japanese", "name": "Japanese Imperial"}, {"id": "javanese", "name": "Javanese"}, {"id": "julian", "name": "Julian"}, {"id": "lunar", "name": "Lunar Cycle"}, {"id": "haab", "name": "Maya Haabʼ"}, {"id": "maya-long-count", "name": "Maya Long Count"}, {"id": "tzolkin", "name": "Maya Tzolkʼin"}, {"id": "old-icelandic", "name": "Old Icelandic"}, {"id": "persian", "name": "Persian"}, {"id": "roman", "name": "Roman"}, {"id": "soviet", "name": "Soviet Calendar"}, {"id": "thai", "name": "Thai Solar"}, {"id": "tibetan", "name": "Tibetan"}, {"id": "tonalpohualli", "name": "Tōnalpōhualli"}, {"id": "xiuhpohualli", "name": "Xiuhpōhualli"}, {"id": "zoroastrian", "name": "Zoroastrian"}],WIDE=["tzolkin", "tonalpohualli"],H={"gregorian": 369, "julian": 369, "roman": 327, "byzantine": 374, "old-icelandic": 391, "french-republican": 422, "coptic": 374, "ethiopian": 374, "amazigh": 374, "armenian": 422, "hebrew": 418, "babylonian": 366, "islamic": 418, "persian": 374, "zoroastrian": 375, "bahai": 374, "saka": 374, "hindu": 418, "bengali": 374, "chinese": 396, "tibetan": 395, "japanese": 374, "burmese": 438, "thai": 374, "javanese": 465, "pawukon": 347, "maya-long-count": 372, "tzolkin": 513, "haab": 327, "tonalpohualli": 513, "xiuhpohualli": 327, "akan": 327, "soviet": 518, "international-fixed": 369, "discordian": 369, "lunar": 327, "darian": 374},GAP=14;
+const grid=document.getElementById('grid');const frames=[];
+function cols(){const w=innerWidth;return w<560?1:w<860?2:w<1180?3:4}
+function setCols(){grid.style.setProperty('--cols',cols())}setCols();let rt;addEventListener('resize',()=>{setCols();place();clearTimeout(rt);rt=setTimeout(()=>{frames.forEach(f=>{try{const h=Math.ceil(f.contentDocument.documentElement.scrollHeight);if(h>200)f.style.height=h+'px'}catch(e){}});place()},200)});
+const $=id=>document.getElementById(id);
+ITEMS.forEach(it=>{const c=document.createElement('div');c.className='cell'+(WIDE.includes(it.id)?' wide':'');
+ const f=document.createElement('iframe');f.title=it.name;f.loading='lazy';f.src='widgets/'+it.id+'.html?embed=1';f.style.height=(H[it.id]||360)+'px';
+ f.addEventListener('load',()=>{send(f);try{const d=f.contentDocument,h=Math.ceil(d.documentElement.scrollHeight);if(h>200){f.style.height=h+'px';place()}}catch(e){}});
+ c.id=it.id;c.appendChild(f);grid.appendChild(c);frames.push(f)});
+// Masonry: every card keeps its own natural height; each is placed by CSS grid into the first free slot.
+function place(){grid.querySelectorAll('.cell').forEach(c=>{c.style.gridRowEnd='span '+(Math.ceil(c.offsetHeight)+GAP)})}
+addEventListener('resize',place);place();
+let live=true;let t=Date.now();
+const pad=n=>String(n).padStart(2,'0'),ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+function send(f){try{f.contentWindow.postMessage(live?{type:'calendar:live'}:{type:'calendar:setTime',time:t},'*')}catch(e){}}
+let q=0;function push(){if(q)return;q=requestAnimationFrame(()=>{q=0;frames.forEach(send)})}
+function show(){$('when').textContent=live?'Live now':new Date(t).toLocaleString(undefined,{weekday:'short',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});$('live').classList.toggle('on',live)}
+function fromControls(){const [y,m,d]=($('date').value||ymd(new Date())).split('-').map(Number),[hh,mm]=($('tod').value||'00:00').split(':').map(Number);t=+new Date(y,m-1,d,hh,mm,0,0);live=false;show();push()}
+function setInputs(d){$('date').value=ymd(d);$('tod').value=pad(d.getHours())+':'+pad(d.getMinutes())}
+function goLive(){live=true;setInputs(new Date());show();push()}
+function shift(k){const d=new Date(live?Date.now():t);d.setDate(d.getDate()+k);setInputs(d);fromControls()}
+$('date').onchange=fromControls;$('tod').onchange=fromControls;
+$('prev').onclick=()=>shift(-1);$('next').onclick=()=>shift(1);$('live').onclick=goLive;goLive();if(location.hash)setTimeout(()=>{const e=document.getElementById(location.hash.slice(1));e&&e.scrollIntoView()},600);
+</script>
+<script>(()=>{const box=document.createElement('div');box.id='tipbox';box.setAttribute('role','tooltip');document.body.appendChild(box);let cur=null,pinned=false;
+const hintOf=e=>e.target.closest&&e.target.closest('.hint');
+function show(b){cur=b;box.textContent=b.dataset.tip;box.classList.add('on');const r=b.getBoundingClientRect(),w=box.offsetWidth,vw=document.documentElement.clientWidth;let x=Math.min(Math.max(12,r.right-w),vw-w-12),y=r.bottom+8;if(y+box.offsetHeight>innerHeight-8)y=r.top-box.offsetHeight-8;box.style.left=x+'px';box.style.top=y+'px';b.setAttribute('aria-expanded','true')}
+function hide(){box.classList.remove('on');if(cur)cur.setAttribute('aria-expanded','false');cur=null;pinned=false}
+document.addEventListener('mouseover',e=>{const b=hintOf(e);if(b&&!pinned)show(b)});
+document.addEventListener('mouseout',e=>{if(hintOf(e)&&!pinned)hide()});
+document.addEventListener('focusin',e=>{const b=hintOf(e);if(b&&!pinned)show(b)});
+document.addEventListener('focusout',e=>{if(hintOf(e)&&!pinned)hide()});
+document.addEventListener('click',e=>{const b=hintOf(e);if(b){e.preventDefault();e.stopPropagation();if(pinned&&cur===b)hide();else{hide();pinned=true;show(b)}}else hide()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')hide()});addEventListener('scroll',hide,{passive:true});addEventListener('resize',hide)})();
+</script>
+</body></html>

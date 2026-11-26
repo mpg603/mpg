@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fun Stuff</title>
+<style>
+@font-face{font-family:Lato;font-weight:400;font-style:normal;font-display:swap;src:url(fonts/lato-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Lato;font-weight:700;font-style:normal;font-display:swap;src:url(fonts/lato-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:Lato;font-weight:900;font-style:normal;font-display:swap;src:url(fonts/lato-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter Tight";font-weight:100 900;font-style:normal;font-display:swap;src:url(fonts/inter-tight-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Serif 4";font-weight:200 900;font-style:normal;font-display:swap;src:url(fonts/source-serif-4-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Serif 4";font-weight:200 900;font-style:italic;font-display:swap;src:url(fonts/source-serif-4-latin-wght-italic.woff2) format("woff2")}
+:root{--paper:#fff;--card:#FAF7ED;--ink:#171717;--muted:#6f6e68;--line:#E6E1D2;--blue:#18558C;
+ --ui:Lato,system-ui,-apple-system,"Segoe UI",sans-serif;--text:"Source Serif 4",Charter,Georgia,serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.5 var(--text)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* masthead */
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;max-width:1320px;margin:0 auto;padding:18px 20px 0}
+.mark{font:800 27px/1 "Inter Tight",var(--ui);letter-spacing:-.02em;text-decoration:none;color:#000}
+.top nav{display:flex;gap:22px}
+.top nav a{font:700 15px/1 var(--ui);text-decoration:none;padding:4px 0;border-bottom:2px solid transparent;color:var(--muted)}
+.top nav a:hover{color:var(--ink)}
+.top nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
+/* ? hints (the popover itself is drawn once, at page level, so no card can clip it) */
+.hint{all:unset;box-sizing:border-box;cursor:help;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;display:inline-grid;place-items:center;font:700 11px/1 var(--ui);color:#a7a59b;vertical-align:middle;flex:none}
+.hint:hover,.hint:focus-visible,.hint[aria-expanded=true]{color:var(--ink)}
+#tipbox{position:fixed;z-index:100;max-width:260px;background:var(--ink);color:#fff;border-radius:8px;padding:10px 12px;font:400 14px/1.4 var(--ui);box-shadow:0 6px 24px rgba(0,0,0,.18);opacity:0;visibility:hidden;transition:opacity .12s;pointer-events:none}
+#tipbox.on{opacity:1;visibility:visible}
+
+.page{max-width:1320px;margin:0 auto;padding:22px 20px 64px}
+h1{margin:0 0 18px;font:900 28px/1.1 var(--ui);letter-spacing:-.01em}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:14px;align-items:start}
+.cell{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cell iframe{display:block;width:100%;border:0;background:transparent}
+.chead{padding:14px 16px 0;text-align:center;font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);position:relative;z-index:2}
+.hit{position:absolute;inset:0;z-index:1}
+.more{display:block;position:relative;z-index:2;text-align:center;padding:8px 0 16px;font:700 14px/1 var(--ui);text-decoration:none}
+</style></head><body>
+<header class="top"><a class="mark" href="index.html">Miguel PG</a><nav aria-label="Main"><a href="index.html">Home</a><a href="funstuff.html" aria-current="page">Fun Stuff</a></nav></header>
+<main class="page"><h1>Fun Stuff</h1><div id="grid"></div></main>
+<script>
+const POOL=["akan", "amazigh", "armenian", "babylonian", "bahai", "bengali", "burmese", "byzantine", "chinese", "coptic", "darian", "discordian", "ethiopian", "french-republican", "gregorian", "haab", "hebrew", "hindu", "international-fixed", "islamic", "japanese", "javanese", "julian", "lunar", "maya-long-count", "old-icelandic", "pawukon", "persian", "roman", "saka", "soviet", "thai", "tibetan", "tonalpohualli", "tzolkin", "xiuhpohualli", "zoroastrian"],H={"gregorian": 369, "julian": 369, "roman": 327, "byzantine": 374, "old-icelandic": 391, "french-republican": 422, "coptic": 374, "ethiopian": 374, "amazigh": 374, "armenian": 422, "hebrew": 418, "babylonian": 366, "islamic": 418, "persian": 374, "zoroastrian": 375, "bahai": 374, "saka": 374, "hindu": 418, "bengali": 374, "chinese": 396, "tibetan": 395, "japanese": 374, "burmese": 438, "thai": 374, "javanese": 465, "pawukon": 347, "maya-long-count": 372, "tzolkin": 513, "haab": 327, "tonalpohualli": 513, "xiuhpohualli": 327, "akan": 327, "soviet": 518, "international-fixed": 369, "discordian": 369, "lunar": 327, "darian": 374};
+// The Calendars widget shows today's Calendar of the Day (same daily pick as the home page).
+const day=Math.floor(Date.now()/864e5);let s=Math.imul(day^0x9e3779b9,2654435761)>>>0;
+const rnd=()=>{s=(s+0x6D2B79F5)>>>0;let z=s;z=Math.imul(z^(z>>>15),z|1);z^=z+Math.imul(z^(z>>>7),z|61);return((z^(z>>>14))>>>0)/4294967296};
+const a=POOL.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+const id=a[0],c=document.createElement('section');c.className='cell';
+c.innerHTML='<div class="chead">Calendars</div>';
+const f=document.createElement('iframe');f.title='Calendars';f.src='widgets/'+id+'.html?embed=1';f.style.height=(H[id]||360)+'px';
+f.addEventListener('load',()=>{try{const x=Math.ceil(f.contentDocument.documentElement.scrollHeight);if(x>200)f.style.height=x+'px'}catch(e){}});c.appendChild(f);
+c.insertAdjacentHTML('beforeend','<a class="hit" href="calendars.html" aria-label="Calendars"></a><a class="more" href="calendars.html">All 37 calendars \u2192</a>');
+document.getElementById('grid').appendChild(c);
+</script></body></html>
