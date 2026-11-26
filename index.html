@@ -37,18 +37,20 @@ a{color:inherit}
 .pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px;align-items:start;margin-top:42px}.pair>.sw{justify-self:end}.pair>.cell{justify-self:start;width:100%;max-width:520px;margin-top:0}@media(max-width:759px){.pair{grid-template-columns:minmax(0,1fr);row-gap:14px;max-width:520px;margin-inline:auto}.pair>.sw{justify-self:stretch;max-width:none}.pair>.cell{justify-self:stretch}}
 .sw{--swf:"Helvetica Neue",Helvetica,Arial,sans-serif;font-family:var(--swf);color:#111;background:var(--card,#FAF7ED);border:1px solid var(--line,#E6E1D2);border-radius:16px;width:100%;max-width:520px;padding:14px;box-sizing:border-box}
 .sw *{box-sizing:border-box}
-.sw-screen{background:#fff;border:1px solid var(--line,#E6E1D2);border-radius:10px;padding:14px 18px 13px;text-align:center;container-type:inline-size}
-.sw-t{font:700 clamp(13px,4.2cqw,20px)/1.1 var(--swf);letter-spacing:.03em;text-transform:uppercase;margin:0 0 clamp(11px,4cqw,20px);white-space:nowrap;color:#111}
-.sw-row{display:flex;justify-content:center;align-items:center;gap:clamp(8px,2.6cqw,14px);text-align:left}
-.sw-bul{width:clamp(38px,14cqw,72px);height:clamp(38px,14cqw,72px);flex:none;display:block}
+.sw-screen{background:#fff;border:1px solid var(--line,#E6E1D2);border-radius:10px;padding:13px 8px 12px;text-align:center;container-type:inline-size}
+.sw-t{font:700 clamp(12px,3.9cqw,18px)/1.1 var(--swf);letter-spacing:.03em;text-transform:uppercase;margin:0 0 clamp(4px,1.6cqw,9px);white-space:nowrap;color:#111}
+.sw-list{list-style:none;margin:0;padding:0;text-align:left}
+.sw-list li{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:clamp(9px,3cqw,16px);padding:clamp(9px,2.9cqw,15px) clamp(2px,1cqw,6px)}
+.sw-list li+li::before{content:"";position:absolute;top:0;left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:1px;background:#111}
+.sw-bul{width:clamp(38px,11.5cqw,56px);height:clamp(38px,11.5cqw,56px);flex:none;display:block}
 .sw-bul text{font-family:var(--swf);font-weight:700;text-anchor:middle}
-.sw-place{min-width:0;max-width:clamp(105px,46cqw,250px);overflow-wrap:anywhere;line-height:1.14}
-.sw-st{font:600 clamp(16px,6.2cqw,30px)/1.14 var(--swf);color:#111}
-.sw-de{font:400 clamp(12px,3.8cqw,17px)/1.2 var(--swf);color:#444;margin-top:4px}
-.sw-wait{display:flex;align-items:baseline;gap:2px;white-space:nowrap;line-height:1;font-variant-numeric:tabular-nums;margin-left:2px}
-.sw-n{font:700 clamp(30px,11.5cqw,56px)/1 var(--swf);letter-spacing:-.01em}
-.sw-u{font:400 clamp(13px,4cqw,20px)/1 var(--swf);color:#222}
-.sw-s{font:400 clamp(10px,2.6cqw,13px)/1.2 var(--swf);color:#6f6e68;margin:clamp(10px,3.2cqw,16px) 0 0}
+.sw-place{min-width:0;overflow-wrap:anywhere;line-height:1.14}
+.sw-st{font:600 clamp(15px,5cqw,25px)/1.14 var(--swf);color:#111}
+.sw-de{font:400 clamp(11px,3.3cqw,16px)/1.2 var(--swf);color:#444;margin-top:3px}
+.sw-wait{display:flex;align-items:baseline;gap:3px;white-space:nowrap;line-height:1;font-variant-numeric:tabular-nums}
+.sw-n{font:700 clamp(28px,9.6cqw,48px)/1 var(--swf);letter-spacing:-.01em}
+.sw-u{font:400 clamp(12px,3.5cqw,18px)/1 var(--swf);color:#222}
+.sw-s{font:400 clamp(10px,2.6cqw,13px)/1.2 var(--swf);color:#6f6e68;margin:clamp(4px,1.6cqw,9px) 0 0}
 .sw [hidden]{display:none!important}
 
 .shuf{all:unset;box-sizing:border-box;position:absolute;left:12px;top:8px;z-index:3;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;cursor:pointer}.shuf:hover{border-color:#c9c3ad}.shuf:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.shuf svg{width:14px;height:14px;display:block}
@@ -66,12 +68,8 @@ a{color:inherit}
 <div class="pair">
 <section class="sw" id="sw" aria-labelledby="sw-t">
 <div class="sw-screen">
-<h2 class="sw-t" id="sw-t">Worst NYC subway wait</h2>
-<div class="sw-row" id="sw-row" role="group" hidden>
-<svg class="sw-bul" id="sw-bul" viewBox="0 0 30 30" aria-hidden="true" focusable="false"><path id="sw-shape" d=""/><text id="sw-letter" x="15" y="15" dy=".35em"></text></svg>
-<div class="sw-place"><div class="sw-st" id="sw-st"></div><div class="sw-de" id="sw-de"></div></div>
-<div class="sw-wait" aria-hidden="true"><span class="sw-n" id="sw-n"></span><span class="sw-u">min</span></div>
-</div>
+<h2 class="sw-t" id="sw-t">Worst NYC subway waits</h2>
+<ol class="sw-list" id="sw-list" hidden></ol>
 <p class="sw-s" id="sw-s">Loading subway data…</p>
 </div>
 </section>
@@ -137,7 +135,9 @@ function dataUrl(){
 }
 const URL_=dataUrl();
 let snap=null,busy=false,shown='',tried=false;
-const ok=d=>d&&d.schema===1&&d.winner&&d.feeds_checked===FEEDS_REQUIRED&&Number.isFinite(d.generated_epoch)&&Number.isFinite(d.oldest_feed_epoch)&&Number.isFinite(d.winner.departure_epoch)&&typeof d.winner.station==='string'&&typeof d.winner.destination==='string'&&typeof d.winner.route==='string';
+const rowOk=w=>w&&Number.isFinite(w.departure_epoch)&&typeof w.station==='string'&&typeof w.destination==='string'&&typeof w.route==='string';
+const rowsOf=d=>Array.isArray(d.top)&&d.top.length?d.top:(d.winner?[d.winner]:[]);
+const ok=d=>d&&d.schema===1&&d.feeds_checked===FEEDS_REQUIRED&&Number.isFinite(d.generated_epoch)&&Number.isFinite(d.oldest_feed_epoch)&&rowsOf(d).length>0&&rowsOf(d).length<=5&&rowsOf(d).every(rowOk);
 function bullet(route){
   let r=route.toUpperCase(),exp=false;
   if(/^[1-7A-Z]X$/.test(r)){exp=true;r=r[0]}
@@ -145,25 +145,30 @@ function bullet(route){
   if(!COL[r])r='S';
   return{r,exp};
 }
-function paint(w){
-  const{r,exp}=bullet(w.route),sh=$('sw-shape'),lt=$('sw-letter');
-  sh.setAttribute('d',exp?'M15 .8 29.2 15 15 29.2.8 15Z':'M15 1a14 14 0 1 0 0 28 14 14 0 0 0 0-28Z');
-  sh.setAttribute('fill',COL[r]);
-  lt.textContent=r;lt.setAttribute('fill',DARK_TEXT.has(r)?'#111':'#fff');lt.setAttribute('font-size',exp?'16':'19');
-  return r;
+const NS='http://www.w3.org/2000/svg';
+function bulletSvg(route){
+  const{r,exp}=bullet(route),svg=document.createElementNS(NS,'svg'),p=document.createElementNS(NS,'path'),t=document.createElementNS(NS,'text');
+  svg.setAttribute('class','sw-bul');svg.setAttribute('viewBox','0 0 30 30');svg.setAttribute('role','img');svg.setAttribute('aria-label',r+' train');svg.setAttribute('focusable','false');
+  p.setAttribute('d',exp?'M15 .8 29.2 15 15 29.2.8 15Z':'M15 1a14 14 0 1 0 0 28 14 14 0 0 0 0-28Z');p.setAttribute('fill',COL[r]);
+  t.setAttribute('x','15');t.setAttribute('y','15');t.setAttribute('dy','.35em');t.setAttribute('fill',DARK_TEXT.has(r)?'#111':'#fff');t.setAttribute('font-size',exp?'16':'19');t.setAttribute('aria-hidden','true');t.textContent=r;
+  svg.append(p,t);return svg;
+}
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+function rowEl(w,min){
+  const li=document.createElement('li'),place=el('div','sw-place'),wait=el('div','sw-wait');
+  place.append(el('div','sw-st',w.station),el('div','sw-de','To '+w.destination));
+  wait.append(el('span','sw-n',min),el('span','sw-u','min'));
+  li.append(bulletSvg(w.route),place,wait);return li;
 }
 function render(){
-  const now=Date.now()/1000,row=$('sw-row'),s=$('sw-s');
-  const stale=!snap||now-snap.oldest_feed_epoch>MAX_FEED_AGE||snap.generated_epoch-now>CLOCK_SKEW||snap.winner.departure_epoch<=now;
-  if(stale){row.hidden=true;s.textContent=snap?'Subway data temporarily unavailable':(tried||!URL_?'Subway data unavailable':'Loading subway data…');shown='';return}
-  const w=snap.winner,min=Math.max(1,Math.ceil((w.departure_epoch-now)/60));
-  const key=snap.generated_epoch+'|'+min;
-  if(key!==shown){
-    shown=key;const r=paint(w);
-    $('sw-st').textContent=w.station;$('sw-de').textContent='To '+w.destination;$('sw-n').textContent=min;
-    row.setAttribute('aria-label',r+' train, '+w.station+', to '+w.destination+', '+min+(min===1?' minute':' minutes'));
-  }
-  row.hidden=false;
+  const now=Date.now()/1000,list=$('sw-list'),s=$('sw-s');
+  // longest wait first; rows whose train has already left drop off the bottom until the next snapshot
+  const rows=snap?rowsOf(snap).slice().sort((a,b)=>b.departure_epoch-a.departure_epoch).slice(0,3).filter(w=>w.departure_epoch>now):[];
+  const stale=!snap||now-snap.oldest_feed_epoch>MAX_FEED_AGE||snap.generated_epoch-now>CLOCK_SKEW||!rows.length;
+  if(stale){list.hidden=true;s.textContent=snap?'Subway data temporarily unavailable':(tried||!URL_?'Subway data unavailable':'Loading subway data…');shown='';return}
+  const mins=rows.map(w=>Math.max(1,Math.ceil((w.departure_epoch-now)/60))),key=snap.generated_epoch+'|'+mins.join(',');
+  if(key!==shown){shown=key;list.replaceChildren(...rows.map((w,i)=>rowEl(w,mins[i])))}
+  list.hidden=false;
   s.textContent=demo?'Design preview · example data':'Updated '+Math.max(0,Math.floor((now-snap.generated_epoch)/60))+' min ago';
 }
 async function refresh(){
@@ -178,7 +183,11 @@ async function refresh(){
   finally{busy=false;tried=true;render()}
 }
 if(demo){const n=Math.floor(Date.now()/1000),q=new URLSearchParams(location.search);
-  snap={schema:1,feeds_checked:7,generated_epoch:n,oldest_feed_epoch:n,winner:{route:q.get('r')||'1',station:q.get('st')||'18 St',destination:q.get('to')||'South Ferry',departure_epoch:n+(+q.get('m')||19)*60}}}
+  const row=(r,st,to,m)=>({route:r,station:st,destination:to,departure_epoch:n+m*60});
+  snap={schema:1,feeds_checked:7,generated_epoch:n,oldest_feed_epoch:n,top:[
+    row(q.get('r')||'1',q.get('st')||'18 St',q.get('to')||'South Ferry',+q.get('m')||19),
+    row('A','Far Rockaway-Mott Av','Inwood-207 St',17),
+    row('Q','Coney Island-Stillwell Av','96 St',14)]}}
 render();refresh();
 setInterval(refresh,REFRESH_MS);setInterval(render,1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){render();refresh()}});

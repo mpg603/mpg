@@ -2,8 +2,9 @@
 """Compute the "worst NYC subway wait" snapshot from the seven official NYCT GTFS-realtime feeds.
 
 Metric: for every directional stop (stop_id ending in N or S), take the soonest predicted
-passenger departure that is still ahead; the winner is the stop where that soonest departure
-is the latest. Stops with no prediction at all are NOT treated as infinite waits.
+passenger departure that is still ahead. Stops are ranked by that wait, longest first, and the
+top TOP_N platforms (each one direction of one station) are published; "winner" is the first of them.
+Stops with no prediction at all are NOT treated as infinite waits.
 
 The script fails closed: if any feed is unreachable, invalid or stale, or coverage looks
 implausibly small, it exits non-zero and writes no snapshot, so the previous one simply ages out.
@@ -22,6 +23,7 @@ PAST_GRACE = 90             # seconds a past prediction still counts (train dwel
 MAX_HORIZON = 2 * 3600      # ignore predictions further out than this (garbage guard)
 FETCH_TRIES = 3
 STATIC_MAX_AGE = 24 * 3600  # re-download station names at most once a day
+TOP_N = 3                   # how many of the longest waits to publish
 SKIP_TRIP = {3, 6, 7}       # CANCELED, DUPLICATED, DELETED
 SKIP_STOP = {1, 2}          # SKIPPED, NO_DATA
 
@@ -135,22 +137,25 @@ def compute(raws, stops, heads, now):
             log("unnamed stop skipped:", sid, dest)
             continue
         ranked.append((when, sid, route, dest, tid))
-    ranked.sort(reverse=True)
-    if not ranked or ranked[0][0] <= now:
-        raise RuntimeError("no future winner")
+    ranked = [r for r in ranked if r[0] > now]      # a wait must still be ahead of us
+    ranked.sort(key=lambda r: (-r[0], r[1]))        # longest first; stop_id breaks ties deterministically
+    if len(ranked) < TOP_N:
+        raise RuntimeError(f"only {len(ranked)} platforms with a future departure")
     for when, sid, route, dest, tid in ranked[:10]:
         hs = heads.get(tid, "?")
         flag = "" if hs in ("?", "") or hs.lower()[:6] == stops[dest].lower()[:6] else "  [headsign differs]"
         log(f"  {round((when - now) / 60):3d} min  {route:>2}  {stops[sid]} ({sid}) -> {stops[dest]}  headsign={hs}{flag}")
-    when, sid, route, dest, tid = ranked[0]
+    top = [{"station": stops[sid], "destination": stops[dest], "route": route,
+            "stop_id": sid, "departure_epoch": int(when)}
+           for when, sid, route, dest, tid in ranked[:TOP_N]]
     return {
         "schema": 1,
         "generated_epoch": int(now),
         "oldest_feed_epoch": int(oldest),
         "feeds_checked": len(raws),
         "directional_stops_checked": len(best),
-        "winner": {"station": stops[sid], "destination": stops[dest], "route": route,
-                   "stop_id": sid, "departure_epoch": int(when)},
+        "top": top,
+        "winner": top[0],     # kept for older copies of the widget
     }
 
 
@@ -172,7 +177,7 @@ def main():
         raws[f] = pathlib.Path(a.feed_dir, f + ".pb").read_bytes() if a.feed_dir else fetch(BASE + f)
     snap = compute(raws, stops, heads, now)
     pathlib.Path(a.out).write_text(json.dumps(snap, separators=(",", ":")))
-    log("wrote", a.out, json.dumps(snap["winner"]))
+    log("wrote", a.out, json.dumps(snap["top"]))
 
 
 if __name__ == "__main__":
