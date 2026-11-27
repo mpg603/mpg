@@ -29,7 +29,7 @@ a{color:inherit}
 
 .home{max-width:1100px;margin:0 auto;padding:0 20px 56px}
 .qt{margin:22px 0 0;text-align:center;width:calc(100vw - 40px);max-width:1320px;position:relative;left:50%;transform:translateX(-50%)}
-.cl{position:relative;display:inline-block}.cl .hint{position:absolute;left:100%;top:calc(50% - 8px);margin-left:7px;width:16px;height:16px;font-size:10px}.cap.cap2{margin:16px 0 0}.cap{display:flex;justify-content:center;align-items:center;gap:8px;margin:0 0 10px;font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.cl{position:relative;display:inline-block}.cl .hint{position:absolute;left:100%;top:calc(50% - 8px);margin-left:7px;width:16px;height:16px;font-size:10px}.cap.cap2{margin:16px 0 0}.cap{display:flex;justify-content:center;align-items:center;gap:8px;margin:0 0 10px;font:800 17px/1 "Inter Tight",var(--ui);letter-spacing:-.01em;text-transform:none;color:var(--ink)}
 .qrow{display:flex;align-items:center;gap:16px}
 .qrow i{flex:1 1 24px;height:0;border-top:1.5px solid var(--ink)}
 .qrow blockquote{flex:0 1 auto;max-width:48em;margin:0;font:italic 400 17px/1.45 var(--text);color:#403f3b;text-wrap:pretty}
@@ -44,7 +44,7 @@ a{color:inherit}
 /* "My Latest Writing": the same cream card, small-caps label, Source Serif text and hairline rules as the rest of the home page */
 .wr{display:flex;flex-direction:column;position:relative;box-sizing:border-box;width:100%;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0 24px 18px;-webkit-tap-highlight-color:transparent}
 .wr:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
-.wr-h{margin:0;padding:16px 0 13px;text-align:center;font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--ink)}
+.wr-h{margin:0;padding:16px 0 13px;text-align:center;font:800 17px/1 "Inter Tight",var(--ui);letter-spacing:-.01em;text-transform:none;color:var(--ink);border-bottom:1px solid var(--ink)}
 .wr-body{padding-top:18px;flex:1 1 auto;min-width:0;container-type:inline-size}
 .wr-date{margin:0 0 9px;font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .wr-title{margin:0;font:600 clamp(25px,8.4cqw,33px)/1.12 var(--text);letter-spacing:-.012em;text-wrap:balance;overflow-wrap:anywhere}
@@ -65,34 +65,34 @@ a{color:inherit}
 .wr-img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;margin:0 0 14px;background:var(--line)}
 .wr-img[hidden]{display:none}
 
-.sw{--swf:"Helvetica Neue",Helvetica,Arial,sans-serif;font-family:var(--swf);color:#111;background:var(--card,#FAF7ED);border:1px solid var(--line,#E6E1D2);border-radius:16px;width:100%;max-width:520px;padding:14px;box-sizing:border-box}
+.sw{--swf:"Helvetica Neue",Helvetica,Arial,sans-serif;font-family:var(--swf);color:#f2f2ef;background:#1b1c1e;border:1px solid #2c2d30;border-radius:16px;width:100%;max-width:520px;padding:14px;box-sizing:border-box}
 .sw *{box-sizing:border-box}
-.sw-screen{background:#fff;border:1px solid var(--line,#E6E1D2);border-radius:10px;padding:13px 8px 12px;text-align:center;container-type:inline-size}
-.sw-t{font:700 clamp(12px,3.9cqw,18px)/1.1 var(--swf);letter-spacing:.03em;text-transform:uppercase;margin:0 0 clamp(4px,1.6cqw,9px);white-space:nowrap;color:#111}
+.sw-screen{background:#1b1c1e;border:0;border-radius:10px;padding:13px 8px 12px;text-align:center;container-type:inline-size}
+.sw-t{font:800 17px/1.1 "Inter Tight",var(--swf);letter-spacing:-.01em;text-transform:none;margin:0 0 clamp(4px,1.6cqw,9px);white-space:nowrap;color:#fff}
 .sw-list{list-style:none;margin:0;padding:0;text-align:left}
 .sw-list li{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:clamp(9px,3cqw,16px);padding:clamp(9px,2.9cqw,15px) clamp(2px,1cqw,6px)}
-.sw-list li+li::before{content:"";position:absolute;top:var(--sn,0px);left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #111}
+.sw-list li+li::before{content:"";position:absolute;top:var(--sn,0px);left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #a9a9a4}
 .sw-bul{width:clamp(38px,11.5cqw,56px);height:clamp(38px,11.5cqw,56px);flex:none;display:block}
 .sw-bul text{font-family:var(--swf);font-weight:700;text-anchor:middle}
 .sw-place{min-width:0;overflow-wrap:anywhere;line-height:1.14}
-.sw-st{font:600 clamp(15px,5cqw,25px)/1.14 var(--swf);color:#111}
-.sw-de{font:400 clamp(11px,3.3cqw,16px)/1.2 var(--swf);color:#444;margin-top:3px}
+.sw-st{font:600 clamp(15px,5cqw,25px)/1.14 var(--swf);color:#fff}
+.sw-de{font:400 clamp(11px,3.3cqw,16px)/1.2 var(--swf);color:#b9b9b4;margin-top:3px}
 .sw-wait{display:flex;align-items:baseline;gap:3px;white-space:nowrap;line-height:1;font-variant-numeric:tabular-nums}
 .sw-n{font:700 clamp(28px,9.6cqw,48px)/1 var(--swf);letter-spacing:-.01em}
-.sw-u{font:400 clamp(12px,3.5cqw,18px)/1 var(--swf);color:#222}
-.sw-s{font:400 clamp(10px,2.6cqw,13px)/1.2 var(--swf);color:#6f6e68;margin:clamp(4px,1.6cqw,9px) 0 0}
+.sw-u{font:400 clamp(12px,3.5cqw,18px)/1 var(--swf);color:#d6d6d1}
+.sw-s{font:400 clamp(10px,2.6cqw,13px)/1.2 var(--swf);color:#9d9d97;margin:clamp(4px,1.6cqw,9px) 0 0}
 .sw [hidden]{display:none!important}
 
 /* caption set in the same ink and size as the destination lines, with a rule under it like the rows, so it reads as part of the board */
-.sw-sub{font:400 clamp(11px,3.3cqw,16px)/1.25 var(--swf);color:#444;margin:clamp(2px,.8cqw,5px) auto 0;padding:0 clamp(12px,4.5cqw,24px) clamp(10px,3cqw,16px);text-wrap:balance;position:relative}
-.sw-sub::after{content:"";position:absolute;top:calc(100% + var(--sn,0px));left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #111}
+.sw-sub{font:400 clamp(11px,3.3cqw,16px)/1.25 var(--swf);color:#c4c4bf;margin:clamp(2px,.8cqw,5px) auto 0;padding:0 clamp(12px,4.5cqw,24px) clamp(10px,3cqw,16px);text-wrap:balance;position:relative}
+.sw-sub::after{content:"";position:absolute;top:calc(100% + var(--sn,0px));left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #a9a9a4}
 /* rule between the last train and the "Updated" line, only when train rows are showing */
 .sw-list:not([hidden])+.sw-s{position:relative;margin-top:clamp(4px,1.6cqw,9px);padding-top:clamp(9px,2.9cqw,15px)}
-.sw-list:not([hidden])+.sw-s::before{content:"";position:absolute;top:var(--sn,0px);left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #111}
+.sw-list:not([hidden])+.sw-s::before{content:"";position:absolute;top:var(--sn,0px);left:clamp(12px,4.5cqw,24px);right:clamp(12px,4.5cqw,24px);height:0;border-top:1px solid #a9a9a4}
 
 .shuf{all:unset;box-sizing:border-box;position:absolute;left:12px;top:8px;z-index:3;width:26px;height:26px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;cursor:pointer}.shuf:hover{border-color:#c9c3ad}.shuf:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.shuf svg{width:14px;height:14px;display:block}
 .cell{position:relative;margin-top:22px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.chead{display:flex;align-items:center;justify-content:center;position:relative;padding:14px 44px 0;font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);z-index:2}
+.chead{display:flex;align-items:center;justify-content:center;position:relative;padding:14px 44px 0;font:800 17px/1 "Inter Tight",var(--ui);letter-spacing:-.01em;text-transform:none;color:var(--ink);z-index:2}
 .chead .hint{position:absolute;right:14px;top:10px}
 .cell iframe{display:block;width:100%;border:0;background:transparent;margin-top:2px}
 .hit{position:absolute;left:0;right:0;top:40px;bottom:46px;z-index:1}
