@@ -67,6 +67,22 @@ a{color:inherit}
 
 .wr-by em{font-style:italic}
 
+/* ¡Que viva YouTube! — same card language as the other widgets; the video is the only dark element */
+.yt{display:block;box-sizing:border-box;width:100%;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0 24px 14px}
+.yt[hidden]{display:none}
+.yt-h{margin:0;padding:16px 0 13px;text-align:center;font:800 14px/1.1 var(--ui);letter-spacing:.06em;color:var(--ink)}
+.yt-mark{display:inline-block;vertical-align:-2px;margin-right:8px}
+.yt-frame{position:relative;width:100%;aspect-ratio:16/9;background:#141415;border-radius:10px;overflow:hidden}
+.yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.yt-msg{margin:10px 0 0;font:400 13px/1.35 var(--ui);color:var(--muted);text-align:center}
+.yt-foot{display:flex;justify-content:flex-end;align-items:baseline;gap:16px;margin:10px 0 0;font:400 12px/1 var(--ui)}
+.yt-go,.yt-next{color:var(--muted);text-decoration:none;font:inherit;background:none;border:0;padding:0;cursor:pointer}
+.yt-go:hover,.yt-next:hover,.yt-go:focus-visible,.yt-next:focus-visible{color:var(--ink);text-decoration:underline}
+/* the three existing widgets and this one share columns on wide screens; this card goes under whichever is shortest */
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.col>.wr,.col>.sw,.col>.cell,.col>.yt{width:100%;max-width:none;margin:0;justify-self:auto}
+@media(min-width:760px) and (max-width:1079px){.pair>.col.c-sw{justify-self:end;width:100%;max-width:520px}.pair>.col.c-cell{justify-self:start;width:100%;max-width:520px}}
+
 .sw{--swf:"Helvetica Neue",Helvetica,Arial,sans-serif;font-family:var(--swf);color:#f2f2ef;background:#1b1c1e;border:1px solid #2c2d30;border-radius:16px;width:100%;max-width:520px;padding:14px;box-sizing:border-box}
 .sw *{box-sizing:border-box}
 .sw-screen{background:#1b1c1e;border:0;border-radius:10px;padding:2px 8px 2px;text-align:center;container-type:inline-size}
@@ -128,6 +144,13 @@ a{color:inherit}
 </section>
 
 <section class="cell" id="cell"></section>
+<section class="yt" id="yt" hidden aria-labelledby="yt-h">
+<h2 class="yt-h" id="yt-h"><svg class="yt-mark" viewBox="0 0 28 20" width="22" height="16" aria-hidden="true" focusable="false"><rect width="28" height="20" rx="6" fill="#E8291F"/><path d="M11 5.6v8.8L18.6 10z" fill="#fff"/></svg>¡Que viva YouTube!</h2>
+<div class="yt-frame" id="yt-frame"><div id="yt-player"></div></div>
+<p class="yt-msg" id="yt-msg" role="status" hidden></p>
+<p class="yt-foot"><button type="button" class="yt-next" id="yt-next" hidden>Try another</button><a class="yt-go" id="yt-go" href="https://www.youtube.com" target="_blank" rel="noopener">Watch on YouTube ↗</a></p>
+</section>
+
 </div>
 </main>
 <script>(()=>{const box=document.createElement('div');box.id='tipbox';box.setAttribute('role','tooltip');document.body.appendChild(box);let cur=null,pinned=false;
@@ -151,13 +174,13 @@ const day=Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/864e5);
 const ymd=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10),PIN={"2026-11-26": "maya-long-count"}; // a date listed in PIN shows that calendar instead of the shuffled pick
 const id=PIN[ymd]||POOL[((day%POOL.length)+POOL.length)%POOL.length],c=document.getElementById('cell'),to='calendars.html';
 c.innerHTML='<div class="chead">Calendar of the day <button class="hint" type="button" aria-label="About the calendar of the day" data-tip="A new calendar every day, picked at random from the collection. Tap the card to see all of them, or use the shuffle button for another.">?</button></div>';
-const f=document.createElement('iframe');f.setAttribute('aria-label',id);f.src='widgets/'+id+'.html?embed=1&v=1795754713&dial='+DIAL;f.style.height=(H[id]||420)+'px';
+const f=document.createElement('iframe');f.setAttribute('aria-label',id);f.src='widgets/'+id+'.html?embed=1&v=1795759154&dial='+DIAL;f.style.height=(H[id]||420)+'px';
 c.appendChild(f);addEventListener('message',e=>{if(e.source===f.contentWindow&&e.data&&e.data.type==='calendar:height')f.style.height=e.data.height+'px'});
 let cur=id;c.insertAdjacentHTML('beforeend','<a class="hit" href="'+to+'" aria-label="See all calendars, starting at '+id+'"></a><a class="more" href="'+to+'">See all calendars →</a>');
 const btn=document.createElement('button');btn.type='button';btn.className='shuf';btn.setAttribute('aria-label','Show a different calendar');
 btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>';
 let deck=[];btn.addEventListener('click',()=>{if(!deck.length){deck=POOL.filter(x=>x!==cur);for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}}
-cur=deck.pop();f.setAttribute('aria-label',cur);f.style.height=(H[cur]||420)+'px';f.src='widgets/'+cur+'.html?embed=1&v=1795754713&dial='+DIAL;c.querySelector('.hit').setAttribute('aria-label','See all calendars, starting at '+cur)});
+cur=deck.pop();f.setAttribute('aria-label',cur);f.style.height=(H[cur]||420)+'px';f.src='widgets/'+cur+'.html?embed=1&v=1795759154&dial='+DIAL;c.querySelector('.hit').setAttribute('aria-label','See all calendars, starting at '+cur)});
 c.appendChild(btn);
 </script>
 <script>(()=>{
@@ -321,5 +344,99 @@ root.dataset.state=mem&&paint(mem)?'ready':'loading';
 refresh();
 setInterval(()=>{if(!document.hidden)refresh()},REFRESH_MS);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-lastTry>REFRESH_MS/3)refresh()});
+})();
+</script>
+<script>(()=>{
+const pair=document.querySelector('.pair'),yt=document.getElementById('yt');if(!pair||!yt)return;
+const $=i=>document.getElementById(i),KEY='mpg-yt-last',RE=/^[A-Za-z0-9_-]{11}$/;
+/* ---------- placement: under the subway sign (fourth in order on mobile) ---------- */
+const cards={wr:$('wr'),sw:document.querySelector('.pair .sw, .pair .col .sw'),cell:$('cell')};
+let mode=0,host=null;
+const h=e=>e.getBoundingClientRect().height;
+function build(){
+  [cards.wr,cards.sw,cards.cell,yt].forEach(e=>pair.appendChild(e));
+  pair.querySelectorAll('.col').forEach(c=>c.remove());host=null;
+  if(mode===1)return;
+  const mk=(k,...kids)=>{const d=document.createElement('div');d.className='col '+k;kids.forEach(x=>d.appendChild(x));pair.appendChild(d);return d};
+  if(mode===3){mk('c-wr',cards.wr);mk('c-sw',cards.sw);mk('c-cell',cards.cell)}
+  else{mk('c-sw',cards.sw);mk('c-cell',cards.cell)} /* writing card keeps its own row above */
+  place();
+}
+function place(){
+  if(mode===1)return;
+  /* always directly under the subway sign */
+  if(host!==cards.sw){host=cards.sw;host.parentNode.appendChild(yt)}
+}
+function setMode(){const w=innerWidth,m=w>=1080?3:w>=760?2:1;if(m!==mode){mode=m;build()}else place()}
+setMode();addEventListener('resize',setMode);
+if('ResizeObserver'in window){let t;const ro=new ResizeObserver(()=>{clearTimeout(t);t=setTimeout(()=>place(),120)});Object.values(cards).forEach(e=>e&&ro.observe(e))}
+/* ---------- the collection ---------- */
+const store={get(){try{return localStorage.getItem(KEY)}catch(e){return null}},set(v){try{localStorage.setItem(KEY,v)}catch(e){}}};
+let vids=[],last=store.get(),tried=new Set(),shown=null,player=null,autoLeft=3,token=0;
+const frame=$('yt-frame'),msg=$('yt-msg'),next=$('yt-next'),go=$('yt-go');
+const watch=id=>'https://www.youtube.com/watch?v='+id;
+function pick(){
+  let pool=vids.filter(v=>!tried.has(v)&&v!==last);
+  if(!pool.length)pool=vids.filter(v=>!tried.has(v));
+  return pool.length?pool[Math.floor(Math.random()*pool.length)]:null;
+}
+function say(t){msg.textContent=t||'';msg.hidden=!t}
+function ratioOf(r,note){return r&&isFinite(r)&&r>1&&r<2.2?r:16/9}
+/* oEmbed (no key) tells us whether the video exists, may be embedded, and what shape it is */
+async function probe(id){
+  const c=new AbortController(),t=setTimeout(()=>c.abort(),3000);
+  try{
+    const r=await fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent(watch(id)),{signal:c.signal});
+    if(r.status===401||r.status===403||r.status===404)return{ok:false};
+    if(!r.ok)return{ok:true};
+    const j=await r.json();return{ok:true,ratio:j.width&&j.height?j.width/j.height:0};
+  }catch(e){return{ok:true}} /* offline, blocked, timed out: just try the player */
+  finally{clearTimeout(t)}
+}
+function failed(id){
+  tried.add(id);
+  if(autoLeft>0&&pick()){autoLeft--;show(pick());return}
+  say("That one can't be played here.");next.hidden=false;go.href=watch(id);yt.hidden=false;
+}
+function apiReady(cb){
+  if(window.YT&&YT.Player)return cb(true);
+  const prev=window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady=()=>{if(prev)try{prev()}catch(e){}cb(true)};
+  const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.async=true;s.onerror=()=>cb(false);document.head.appendChild(s);
+  setTimeout(()=>{if(!(window.YT&&YT.Player))cb(false)},4000);
+}
+let apiState=0,queued=[];
+function withApi(cb){if(apiState===1)return cb(true);if(apiState===-1)return cb(false);queued.push(cb);if(queued.length>1)return;apiReady(ok=>{apiState=ok?1:-1;const q=queued;queued=[];q.forEach(f=>f(ok))})}
+async function show(id){
+  if(!id){yt.hidden=false;say("Couldn't find a video to show.");return}
+  const mine=++token;shown=id;say('');next.hidden=true;go.href=watch(id);
+  const p=await probe(id);if(mine!==token)return;
+  if(!p.ok){failed(id);return}
+  frame.style.aspectRatio=String(ratioOf(p.ratio));
+  last=id;store.set(id);
+  withApi(ok=>{
+    if(mine!==token)return;
+    if(ok){
+      try{if(player&&player.cueVideoById){player.cueVideoById(id)}else{
+        player=new YT.Player('yt-player',{host:'https://www.youtube-nocookie.com',videoId:id,width:'100%',height:'100%',
+          playerVars:{rel:0,playsinline:1,autoplay:0,origin:location.origin},
+          events:{onError:()=>{if(shown)failed(shown)}}});
+      }}catch(e){plain(id)}
+    }else plain(id);
+    yt.hidden=false;place();
+  });
+}
+/* if YouTube's player script is unreachable, a plain privacy-enhanced embed still works (no error reporting) */
+function plain(id){
+  player=null;frame.textContent='';
+  const f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/'+id+'?rel=0&playsinline=1';f.title='Video';
+  f.allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';frame.appendChild(f);
+}
+next.addEventListener('click',()=>{autoLeft=0;if(!pick()){tried.clear()}say('');show(pick())});
+fetch('youtube-videos.json',{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject()).then(list=>{
+  const seen=new Set();vids=(Array.isArray(list)?list:[]).map(x=>typeof x==='string'?x:x&&x.id).filter(i=>typeof i==='string'&&RE.test(i)&&!seen.has(i)&&seen.add(i));
+  if(!vids.length)return;
+  show(pick());
+}).catch(()=>{});
 })();
 </script></body></html>
