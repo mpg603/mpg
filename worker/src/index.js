@@ -7,7 +7,7 @@
 //    The answer is kept for about 15 minutes, and if the feed is briefly down the last good answer is served.
 //
 // To list writing from another place later, add one line to SOURCES below, then use /writing?source=<name>.
-import { parseFeed } from "./feed.js";
+import { parseFeed, decodeEntities } from "./feed.js";
 
 const SOURCES = {
   substack: { url: "https://mpg603.substack.com/feed", home: "https://mpg603.substack.com" },
@@ -101,6 +101,22 @@ async function writing(request, ctx, url) {
     if (xml.length > MAX_FEED_BYTES) throw new Error("feed too large");
 
     const parsed = parseFeed(xml);
+    // no picture in the feed: read the article page's own preview image (og:image), which every Substack post sets
+    if (!parsed.item.image) {
+      try {
+        const pr = await fetch(parsed.item.link, {
+          headers: { "User-Agent": "Mozilla/5.0 (compatible; miguelpg-writing/1.0; +https://miguelpg.org)", Accept: "text/html" },
+          signal: AbortSignal.timeout(6000),
+        });
+        if (pr.ok) {
+          const head = (await pr.text()).slice(0, 200000);
+          const tag = /<meta\b[^>]*\bproperty\s*=\s*["']og:image["'][^>]*>/i.exec(head) || /<meta\b[^>]*\bname\s*=\s*["']twitter:image["'][^>]*>/i.exec(head);
+          const m = tag && /\bcontent\s*=\s*["']([^"']+)["']/i.exec(tag[0]);
+          const u = m ? decodeEntities(m[1]).trim() : "";
+          if (/^https:\/\//i.test(u)) parsed.item.image = u;
+        }
+      } catch (e) { /* the card simply shows without a picture */ }
+    }
     const body = {
       ok: true,
       source: name,
