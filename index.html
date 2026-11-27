@@ -60,6 +60,10 @@ a{color:inherit}
 .wr[data-state=loading] .wr-title,.wr[data-state=loading] .wr-go{visibility:hidden}
 .wr[data-state=loading] .wr-title{display:none}
 
+/* cover picture with the title and subtitle as its caption; the excerpt only appears when an article has no picture */
+.wr-img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;margin:0 0 14px;background:var(--line)}
+.wr-img[hidden]{display:none}
+
 .sw{--swf:"Helvetica Neue",Helvetica,Arial,sans-serif;font-family:var(--swf);color:#111;background:var(--card,#FAF7ED);border:1px solid var(--line,#E6E1D2);border-radius:16px;width:100%;max-width:520px;padding:14px;box-sizing:border-box}
 .sw *{box-sizing:border-box}
 .sw-screen{background:#fff;border:1px solid var(--line,#E6E1D2);border-radius:10px;padding:13px 8px 12px;text-align:center;container-type:inline-size}
@@ -101,6 +105,7 @@ a{color:inherit}
 <a class="wr" id="wr" href="https://mpg603.substack.com" aria-labelledby="wr-h">
 <p class="wr-h" id="wr-h">My Latest Writing</p>
 <div class="wr-body" id="wr-body">
+<img class="wr-img" id="wr-img" alt="" hidden>
 <p class="wr-date" id="wr-date" hidden></p>
 <h2 class="wr-title" id="wr-title"></h2>
 <p class="wr-deck" id="wr-deck" hidden></p>
@@ -268,7 +273,9 @@ function paint(d){
   $('wr-title').textContent=it.title;
   show($('wr-date'),when);
   show($('wr-deck'),typeof it.subtitle==='string'?it.subtitle:'');
-  show($('wr-ex'),typeof it.excerpt==='string'?it.excerpt:'');
+  const img=$('wr-img'),src=typeof it.image==='string'&&/^https:\/\//.test(it.image)?it.image:'';
+  img.onerror=()=>{img.hidden=true;show($('wr-ex'),typeof it.excerpt==='string'?it.excerpt:'')};
+  if(src){img.src=src;img.hidden=false;show($('wr-ex'),'')}else{img.hidden=true;img.removeAttribute('src');show($('wr-ex'),typeof it.excerpt==='string'?it.excerpt:'')}
   const site=d.site&&typeof d.site.title==='string'?d.site.title:'';
   $('wr-by').textContent=site?'From '+site:'';
   root.setAttribute('aria-label','My latest writing: '+it.title+(when?', '+when:''));
@@ -278,7 +285,7 @@ function paint(d){
 function fallback(){
   if(root.dataset.state==='ready')return;
   root.dataset.state='fallback';root.href=okUrl(cfg.home)?cfg.home:root.href;
-  $('wr-title').textContent=cfg.siteTitle||'A Word With You';show($('wr-date'),'');show($('wr-deck'),'');show($('wr-ex'),'');$('wr-by').textContent='';$('wr-go').textContent='Read my writing →';
+  $('wr-title').textContent=cfg.siteTitle||'A Word With You';show($('wr-date'),'');show($('wr-deck'),'');show($('wr-ex'),'');$('wr-img').hidden=true;$('wr-by').textContent='';$('wr-go').textContent='Read my writing →';
 }
 async function getJson(u){
   const c=new AbortController(),t=setTimeout(()=>c.abort(),TIMEOUT_MS);

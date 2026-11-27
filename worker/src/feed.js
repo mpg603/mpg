@@ -126,6 +126,18 @@ function openingParagraphs(html, want) {
   return out.join(" ");
 }
 
+// cover picture: the feed's <enclosure>/<media:content> image first, otherwise the first <img> in the article body
+function imageOf(item, content) {
+  const attr = (tag, name) => { const m = new RegExp("<" + tag + "\\b[^>]*?\\b" + name + "\\s*=\\s*[\"']([^\"']+)[\"']", "i").exec(item); return m ? m[1] : ""; };
+  const enc = new RegExp("<enclosure\\b[^>]*>", "i").exec(item);
+  let u = "";
+  if (enc && /type\s*=\s*["']image\//i.test(enc[0])) { const m = /\burl\s*=\s*["']([^"']+)["']/i.exec(enc[0]); if (m) u = m[1]; }
+  if (!u) u = attr("media:content", "url") || attr("media:thumbnail", "url");
+  if (!u && content) { const m = /<img\b[^>]*?\bsrc\s*=\s*["']([^"']+)["']/i.exec(content); if (m) u = m[1]; }
+  u = decodeEntities(u).trim();
+  return /^https:\/\//i.test(u) ? u : "";
+}
+
 export function parseFeed(xml, opts = {}) {
   const excerptChars = opts.excerptChars || 420;
   if (typeof xml !== "string" || xml.length < 40) throw new Error("empty feed");
@@ -173,6 +185,7 @@ export function parseFeed(xml, opts = {}) {
       date: Number.isFinite(bestTime) ? new Date(bestTime).toISOString() : null,
       subtitle,
       excerpt,
+      image: imageOf(best, content),
     },
   };
 }
