@@ -1,6 +1,6 @@
 {
-  "api": "",
-  "source": "substack",
-  "home": "https://mpg603.substack.com",
-  "title": "A Word With You"
+ "api": "https://subway-update.miguelpg603.workers.dev/writing",
+ "source": "substack",
+ "home": "https://mpg603.substack.com",
+ "title": "A Word With You"
 }
