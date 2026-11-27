@@ -2,7 +2,7 @@
   "name": "subway-update",
   "main": "src/index.js",
   "compatibility_date": "2025-01-01",
-  "workers_dev": false,
+  "workers_dev": true,
   "triggers": { "crons": ["*/5 * * * *"] },
   "vars": { "GH_OWNER": "mpg603", "GH_REPO": "mpg", "GH_REF": "main", "GH_WORKFLOW": "subway-wait.yml" }
 }
