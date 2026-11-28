@@ -4,5 +4,6 @@
   "compatibility_date": "2025-01-01",
   "workers_dev": true,
   "triggers": { "crons": ["*/5 * * * *"] },
+  "kv_namespaces": [{ "binding": "SONGS", "id": "2f32771c645d4b6f9f210e9a5ab3c567" }],
   "vars": { "GH_OWNER": "mpg603", "GH_REPO": "mpg", "GH_REF": "main", "GH_WORKFLOW": "subway-wait.yml" }
 }

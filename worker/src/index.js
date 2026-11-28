@@ -8,6 +8,7 @@
 //
 // To list writing from another place later, add one line to SOURCES below, then use /writing?source=<name>.
 import { parseFeed, decodeEntities } from "./feed.js";
+import { updateSongs, songsResponse, seedHandler, statusResponse } from "./songs.js";
 
 const SOURCES = {
   substack: { url: "https://mpg603.substack.com/feed", home: "https://mpg603.substack.com" },
@@ -27,10 +28,18 @@ const LOCAL_ORIGIN = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 export default {
   async scheduled(_event, env, ctx) {
     ctx.waitUntil(dispatch(env));
+    // First Spin: refresh the song lists (does nothing until the storage and secrets are set up)
+    ctx.waitUntil(updateSongs(env).then((r) => console.log("songs", JSON.stringify(r))).catch((e) => console.log("songs failed", String(e))));
   },
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === "/writing") return writing(request, ctx, url);
+    if (url.pathname === "/songs") {
+      if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(request) });
+      return songsResponse(env, json, request);
+    }
+    if (url.pathname === "/seed") return seedHandler(request, env, json);
+    if (url.pathname === "/songs-status") return statusResponse(env);
     return new Response("subway-trigger is running", { status: 200 });
   },
 };
