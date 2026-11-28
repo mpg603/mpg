@@ -52,8 +52,8 @@ document.getElementById('grid').appendChild(c);
 const SG=[{"title": "Who Do You Call", "artist": "Yinka Bernie", "when": 1795375476}, {"title": "Djaliya", "artist": "Ablaye Cissoko", "when": 1795375089}, {"title": "Sasi Jaiva", "artist": "MISHY KOPE", "when": 1795374650}],sc=document.createElement('section');sc.className='cell';
 sc.innerHTML='<div class="chead">First Spin</div><p class="sgs">The latest songs I heard for the first time</p><ul class="sg"></ul><a class="hit" href="songs.html" aria-label="First Spin, songs"></a><a class="more" href="songs.html">All songs \u2192</a>';
 const fillSongs=L=>{const ul=sc.querySelector('.sg');ul.textContent='';L.slice(0,3).forEach(x=>{const li=document.createElement('li'),b=document.createElement('b'),sp=document.createElement('span');b.textContent=x.title;sp.textContent=x.artist+' \u00b7 '+new Date(x.when*1000).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});li.append(b,sp);ul.appendChild(li)})};
-fillSongs(SG);
-fetch('https://subway-update.miguelpg603.workers.dev/songs').then(r=>r.ok?r.json():Promise.reject()).then(j=>{if(j&&j.ok&&Array.isArray(j.discovered)&&j.discovered.length)fillSongs(j.discovered)}).catch(()=>{});
+let liveS=false;const fbS=()=>{if(!liveS)fillSongs(SG)};setTimeout(fbS,4000);
+fetch('https://subway-update.miguelpg603.workers.dev/songs',{cache:'no-store'}).then(r=>r.ok?r.json():Promise.reject()).then(j=>{if(j&&j.ok&&Array.isArray(j.discovered)&&j.discovered.length){liveS=true;fillSongs(j.discovered)}else fbS()}).catch(fbS);
 document.getElementById('grid').appendChild(sc);
 
 </script></body></html>
