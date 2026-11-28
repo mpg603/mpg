@@ -1,29 +1,54 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Video collection check</title>
-<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#111}table{border-collapse:collapse;width:100%;max-width:980px}td,th{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.ok{color:#1a7f37}.bad{color:#b42318;font-weight:700}.unk{color:#9a6700}code{font-size:13px}</style></head>
+<style>body{font:14px/1.4 system-ui,sans-serif;margin:24px;color:#111}table{border-collapse:collapse;width:100%;max-width:1180px}td,th{border-bottom:1px solid #ddd;padding:6px 8px;text-align:left;vertical-align:top}.ok{color:#1a7f37}.bad{color:#b42318;font-weight:700}.unk{color:#9a6700}.watch{background:#fff4d6}code{font-size:13px}button{font:inherit;padding:8px 14px;border:1px solid #111;background:#111;color:#fff;border-radius:8px;cursor:pointer}button[disabled]{opacity:.4;cursor:default}.flag{color:#9a6700}</style></head>
 <body><h1>Video collection check</h1>
-<p>Private maintenance page. It asks YouTube about every ID in <code>youtube-videos.json</code> from this browser. Nothing is changed or removed.</p>
-<p id="sum">Checking…</p><table><thead><tr><th>#</th><th>ID</th><th>Your note</th><th>Result</th><th>Shape</th></tr></thead><tbody id="rows"></tbody></table>
+<p>Private maintenance page. It reads <code>youtube-videos.json</code> (the live rotation) and asks YouTube about every ID from this browser. Nothing on the site is changed or removed.</p>
+<p id="sum">Checking…</p>
+<p><button id="dl" disabled>Download updated youtube-videos.json</button> <span id="dlnote"></span></p>
+<table><thead><tr><th>#</th><th>ID</th><th>Title on file</th><th>Title on YouTube</th><th>Status</th><th>Shape</th><th>Flags</th></tr></thead><tbody id="rows"></tbody></table>
 <script>
 (async()=>{
-const list=await (await fetch('youtube-videos.json',{cache:'no-cache'})).json(),rows=document.getElementById('rows'),seen={};let bad=0,unk=0;
+const BLACKLIST=['BkI6tKFMETE','3z_gcxG2Z0o','szGxq3pvJPQ','dQw4w9WgXcQ'];
+/* titles that match the removal list; the yak is exempt on purpose */
+const WATCH=/blacknose|valais|\bsheep\b|\blamb\b|sloth sanctuary|iberian lynx|len[cç][oó]is|maranhenses|badger song|stop frame|doris eaton/i;
+const list=await (await fetch('youtube-videos.json',{cache:'no-cache'})).json(),rows=document.getElementById('rows'),seen={},out=[];
+let bad=0,unk=0,watch=0,gen=0;
+const generic=t=>!t||/user-selected/i.test(t);
 for(let i=0;i<list.length;i++){
   const v=list[i],tr=document.createElement('tr');rows.appendChild(tr);
   const cell=(t,c)=>{const d=document.createElement('td');d.textContent=t;if(c)d.className=c;tr.appendChild(d);return d};
-  cell(i+1);const idc=cell(v.id);cell(v.note||'');
-  let res,cls,shape='';
-  if(seen[v.id]){res='DUPLICATE of #'+seen[v.id];cls='bad';bad++}else{
+  const rec={id:v.id,title:v.title||null,upload_date:v.upload_date||null,status:'unchecked'};
+  if(v.flag)rec.flag=v.flag;
+  cell(i+1);cell(v.id);cell(v.title||'(none)');
+  let live='',status='',cls='',shape='',flags=[];
+  if(v.flag)flags.push(v.flag);
+  if(BLACKLIST.includes(v.id)){flags.push('BLACKLISTED ID IS PRESENT');bad++}
+  if(seen[v.id]){status='DUPLICATE of #'+seen[v.id];cls='bad';bad++;rec.status='duplicate'}else{
     seen[v.id]=i+1;
     try{const r=await fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent('https://www.youtube.com/watch?v='+v.id));
-      if(r.ok){const j=await r.json();res='OK — "'+j.title+'" by '+j.author_name;cls='ok';shape=(j.width/j.height).toFixed(2)+(Math.abs(j.width/j.height-4/3)<.05?' (4:3)':Math.abs(j.width/j.height-16/9)<.05?' (16:9)':'')}
-      else if(r.status===401||r.status===403){res='Embedding disabled or private ('+r.status+')';cls='bad';bad++}
-      else if(r.status===404){res='Not found / deleted ('+r.status+')';cls='bad';bad++}
-      else{res='Unexpected answer ('+r.status+')';cls='unk';unk++}
-    }catch(e){res='Could not check (network or blocked)';cls='unk';unk++}
+      if(r.ok){const j=await r.json();live=j.title+' — '+j.author_name;status='OK, embeddable';cls='ok';rec.status='ok';
+        if(generic(rec.title)){rec.title=j.title;gen++}
+        rec.author=j.author_name;
+        shape=(j.width/j.height).toFixed(2)+(Math.abs(j.width/j.height-4/3)<.05?' (4:3)':Math.abs(j.width/j.height-16/9)<.05?' (16:9)':'');
+        if(WATCH.test(j.title)){flags.push('Title matches the removal list: review');watch++;tr.className='watch'}
+        if(rec.flag&&/title not yet retrieved/i.test(rec.flag))delete rec.flag}
+      else if(r.status===401||r.status===403){status='Embedding disabled or private ('+r.status+')';cls='bad';bad++;rec.status='not-embeddable'}
+      else if(r.status===404){status='Not found / deleted ('+r.status+')';cls='bad';bad++;rec.status='not-found'}
+      else{status='Unexpected answer ('+r.status+')';cls='unk';unk++}
+    }catch(e){status='Could not check (network or blocked)';cls='unk';unk++}
   }
-  cell(res,cls);cell(shape);
+  cell(live);cell(status,cls);cell(shape);
+  const fc=cell('');fc.className='flag';fc.textContent=flags.join(' · ');
+  rec.checked=new Date().toISOString().slice(0,10);
+  out.push(rec);
 }
-document.getElementById('sum').textContent=list.length+' entries · '+bad+' problem'+(bad===1?'':'s')+' · '+unk+' could not be checked';
+document.getElementById('sum').textContent=list.length+' entries · '+new Set(list.map(v=>v.id)).size+' unique IDs · '+bad+' problem'+(bad===1?'':'s')+' · '+unk+' could not be checked · '+watch+' title'+(watch===1?'':'s')+' to review · '+gen+' generic label'+(gen===1?'':'s')+' now filled from YouTube';
+const dl=document.getElementById('dl');dl.disabled=false;
+document.getElementById('dlnote').textContent='Fills in real titles and statuses. Nothing is removed or replaced. YouTube’s quick check does not return upload dates, so those stay empty.';
+dl.onclick=()=>{
+  const text='[\n'+out.map(r=>JSON.stringify(r)).join(',\n')+'\n]\n';
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download='youtube-videos.json';a.click();
+};
 })();
 </script></body></html>
