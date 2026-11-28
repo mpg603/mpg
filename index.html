@@ -84,22 +84,22 @@ a{color:inherit}
 .pair>.stack{justify-self:end;width:100%;max-width:520px}.pair>.stack.r{justify-self:start}@media(min-width:1080px){.pair>.stack{justify-self:stretch;max-width:none}}
 
 /* First Spin: small horizontal card. Warm clay paper, a record peeking out from behind the cover. Light enough that bright, dark and pastel covers all sit well on it */
-.fs{--fs-bg:#C9DABF;--fs-line:#A7BF9B;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;box-sizing:border-box;width:100%;text-decoration:none;color:var(--ink);background:var(--fs-bg);border:1px solid var(--fs-line);border-radius:14px;padding:10px 14px 10px 10px;-webkit-tap-highlight-color:transparent}
+.fs{--fs-bg:#B4C8F0;--fs-line:#8FA9DD;display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;box-sizing:border-box;width:100%;text-decoration:none;color:var(--ink);background:var(--fs-bg);border:1px solid var(--fs-line);border-radius:14px;padding:10px 14px 10px 10px;-webkit-tap-highlight-color:transparent}
 .fs:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 .fs-art{position:relative;width:112px;height:84px}
-.fs-disc{position:absolute;left:28px;top:0;width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,#C9DABF 0 2px,transparent 2.5px),radial-gradient(circle,#18558C 0 15px,transparent 15.5px),conic-gradient(from 30deg,#1b1c1e,#34363a 12%,#1b1c1e 25%,#1b1c1e 50%,#34363a 62%,#1b1c1e 75%,#1b1c1e);box-shadow:0 3px 8px rgba(25,45,25,.28);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.fs-disc{position:absolute;left:28px;top:0;width:84px;height:84px;border-radius:50%;background:radial-gradient(circle,#B4C8F0 0 2px,transparent 2.5px),radial-gradient(circle,#18558C 0 15px,transparent 15.5px),conic-gradient(from 30deg,#1b1c1e,#34363a 12%,#1b1c1e 25%,#1b1c1e 50%,#34363a 62%,#1b1c1e 75%,#1b1c1e);box-shadow:0 3px 8px rgba(15,30,70,.28);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
 .fs-disc::before{content:"";position:absolute;inset:6px;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 2px,rgba(255,255,255,.05) 2px 3px)}
 .fs:hover .fs-disc,.fs:focus-visible .fs-disc{transform:rotate(300deg)}
 @media(prefers-reduced-motion:reduce){.fs-disc{transition:none}}
-.fs-cover{position:absolute;left:0;top:0;width:84px;height:84px;border-radius:7px;overflow:hidden;background:#b7cbab;display:grid;place-items:center;color:#7f9873;font:400 30px/1 var(--text);box-shadow:0 4px 12px rgba(25,45,25,.35),0 0 0 1px rgba(25,45,25,.14)}
+.fs-cover{position:absolute;left:0;top:0;width:84px;height:84px;border-radius:7px;overflow:hidden;background:#a3b9e8;display:grid;place-items:center;color:#6a84bd;font:400 30px/1 var(--text);box-shadow:0 4px 12px rgba(15,30,70,.35),0 0 0 1px rgba(15,30,70,.14)}
 .fs-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .fs-body{min-width:0}
-.fs-h{margin:0 0 4px;font:800 10px/1.1 var(--ui);letter-spacing:.16em;text-transform:uppercase;color:#35502c}
+.fs-h{margin:0 0 4px;font:800 10px/1.1 var(--ui);letter-spacing:.16em;text-transform:uppercase;color:#14284f}
 .fs-t{margin:0;font:600 16.5px/1.15 var(--text);letter-spacing:-.005em;overflow-wrap:anywhere;color:var(--ink);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:1;overflow:hidden}
 .fs:hover .fs-t{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:.16em}
 .fs-a{margin:2px 0 0;font:400 13.5px/1.25 var(--text);color:#403f3b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fs-sub{margin:5px 0 0;font:400 11.5px/1.3 var(--ui);color:#476040}
-.fs-m{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:5px 0 0;font:400 11.5px/1.3 var(--ui);color:#476040}
+.fs-sub{margin:5px 0 0;font:400 11.5px/1.3 var(--ui);color:#22396a}
+.fs-m{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:5px 0 0;font:400 11.5px/1.3 var(--ui);color:#22396a}
 .fs-go{flex:none;font:700 12.5px/1 var(--ui);color:var(--ink)}
 .fs:hover .fs-go{text-decoration:underline}
 
@@ -205,13 +205,13 @@ const day=Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/864e5);
 const ymd=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10),PIN={"2026-11-26": "maya-long-count"}; // a date listed in PIN shows that calendar instead of the shuffled pick
 const id=PIN[ymd]||POOL[((day%POOL.length)+POOL.length)%POOL.length],c=document.getElementById('cell'),to='calendars.html';
 c.innerHTML='<div class="chead">Calendar of the day <button class="hint" type="button" aria-label="About the calendar of the day" data-tip="A new calendar every day, picked at random from the collection. Tap the card to see all of them, or use the shuffle button for another.">?</button></div>';
-const f=document.createElement('iframe');f.setAttribute('aria-label',id);f.src='widgets/'+id+'.html?embed=1&v=1795842971&dial='+DIAL;f.style.height=(H[id]||420)+'px';
+const f=document.createElement('iframe');f.setAttribute('aria-label',id);f.src='widgets/'+id+'.html?embed=1&v=1795843208&dial='+DIAL;f.style.height=(H[id]||420)+'px';
 c.appendChild(f);addEventListener('message',e=>{if(e.source===f.contentWindow&&e.data&&e.data.type==='calendar:height')f.style.height=e.data.height+'px'});
 let cur=id;c.insertAdjacentHTML('beforeend','<a class="hit" href="'+to+'" aria-label="See all calendars, starting at '+id+'"></a><a class="more" href="'+to+'">See all calendars →</a>');
 const btn=document.createElement('button');btn.type='button';btn.className='shuf';btn.setAttribute('aria-label','Show a different calendar');
 btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>';
 let deck=[];btn.addEventListener('click',()=>{if(!deck.length){deck=POOL.filter(x=>x!==cur);for(let i=deck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]]}}
-cur=deck.pop();f.setAttribute('aria-label',cur);f.style.height=(H[cur]||420)+'px';f.src='widgets/'+cur+'.html?embed=1&v=1795842971&dial='+DIAL;c.querySelector('.hit').setAttribute('aria-label','See all calendars, starting at '+cur)});
+cur=deck.pop();f.setAttribute('aria-label',cur);f.style.height=(H[cur]||420)+'px';f.src='widgets/'+cur+'.html?embed=1&v=1795843208&dial='+DIAL;c.querySelector('.hit').setAttribute('aria-label','See all calendars, starting at '+cur)});
 c.appendChild(btn);
 </script>
 <script>(()=>{
