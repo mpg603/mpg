@@ -34,7 +34,7 @@ h1{margin:0 0 18px;font:900 28px/1.1 var(--ui);letter-spacing:-.01em}
 .cell iframe{display:block;width:100%;border:0;background:transparent}
 .chead{padding:14px 16px 0;text-align:center;font:700 11px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);position:relative;z-index:2}
 .hit{position:absolute;inset:0;z-index:1}
-.sg{list-style:none;margin:0;padding:12px 16px 0}.sg li{padding:8px 0;border-top:1px solid var(--line)}.sg li:first-child{border-top:0}.sg b{display:block;font:700 15px/1.25 var(--ui);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sg span{display:block;font:400 13px/1.3 var(--ui);color:var(--muted)}
+.sgs{margin:6px 16px 0;text-align:center;font:400 13px/1.3 var(--ui);color:var(--muted)}.sg{list-style:none;margin:0;padding:12px 16px 0}.sg li{padding:8px 0;border-top:1px solid var(--line)}.sg li:first-child{border-top:0}.sg b{display:block;font:700 15px/1.25 var(--ui);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sg span{display:block;font:400 13px/1.3 var(--ui);color:var(--muted)}
 .more{display:block;position:relative;z-index:2;text-align:center;padding:8px 0 16px;font:700 14px/1 var(--ui);text-decoration:none}
 </style></head><body>
 <header class="top"><a class="mark" href="index.html">Miguel PG</a><nav aria-label="Main"><a href="index.html">Home</a><a href="funstuff.html" aria-current="page">Fun Stuff</a></nav></header>
@@ -50,7 +50,7 @@ c.appendChild(f);addEventListener('message',e=>{if(e.source===f.contentWindow&&e
 c.insertAdjacentHTML('beforeend','<a class="hit" href="calendars.html" aria-label="Calendars"></a><a class="more" href="calendars.html">All 37 calendars \u2192</a>');
 document.getElementById('grid').appendChild(c);
 const SG=[{"title": "Who Do You Call", "artist": "Yinka Bernie", "when": 1795375476}, {"title": "Djaliya", "artist": "Ablaye Cissoko", "when": 1795375089}, {"title": "Sasi Jaiva", "artist": "MISHY KOPE", "when": 1795374650}],sc=document.createElement('section');sc.className='cell';
-sc.innerHTML='<div class="chead">First Spin</div><ul class="sg"></ul><a class="hit" href="songs.html" aria-label="First Spin, songs"></a><a class="more" href="songs.html">All songs \u2192</a>';
+sc.innerHTML='<div class="chead">First Spin</div><p class="sgs">The most recent songs I listened to for the first time</p><ul class="sg"></ul><a class="hit" href="songs.html" aria-label="First Spin, songs"></a><a class="more" href="songs.html">All songs \u2192</a>';
 const fillSongs=L=>{const ul=sc.querySelector('.sg');ul.textContent='';L.slice(0,3).forEach(x=>{const li=document.createElement('li'),b=document.createElement('b'),sp=document.createElement('span');b.textContent=x.title;sp.textContent=x.artist+' \u00b7 '+new Date(x.when*1000).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});li.append(b,sp);ul.appendChild(li)})};
 fillSongs(SG);
 fetch('https://subway-update.miguelpg603.workers.dev/songs').then(r=>r.ok?r.json():Promise.reject()).then(j=>{if(j&&j.ok&&Array.isArray(j.discovered)&&j.discovered.length)fillSongs(j.discovered)}).catch(()=>{});
