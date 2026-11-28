@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>First Spin</title>
+<style>
+@font-face{font-family:Lato;font-weight:400;font-style:normal;font-display:swap;src:url(fonts/lato-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Lato;font-weight:700;font-style:normal;font-display:swap;src:url(fonts/lato-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:Lato;font-weight:900;font-style:normal;font-display:swap;src:url(fonts/lato-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"Inter Tight";font-weight:100 900;font-style:normal;font-display:swap;src:url(fonts/inter-tight-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Serif 4";font-weight:200 900;font-style:normal;font-display:swap;src:url(fonts/source-serif-4-latin-wght-normal.woff2) format("woff2")}
+@font-face{font-family:"Source Serif 4";font-weight:200 900;font-style:italic;font-display:swap;src:url(fonts/source-serif-4-latin-wght-italic.woff2) format("woff2")}
+:root{--paper:#fff;--card:#FAF7ED;--ink:#171717;--muted:#6f6e68;--line:#E6E1D2;--blue:#18558C;
+ --ui:Lato,system-ui,-apple-system,"Segoe UI",sans-serif;--text:"Source Serif 4",Charter,Georgia,serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.5 var(--text)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* masthead */
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:16px;max-width:1320px;margin:0 auto;padding:18px 20px 0}
+.mark{font:800 27px/1 "Inter Tight",var(--ui);letter-spacing:-.02em;text-decoration:none;color:#000}
+.top nav{display:flex;gap:22px}
+.top nav a{font:700 15px/1 var(--ui);text-decoration:none;padding:4px 0;border-bottom:2px solid transparent;color:var(--muted)}
+.top nav a:hover{color:var(--ink)}
+.top nav a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
+/* ? hints (the popover itself is drawn once, at page level, so no card can clip it) */
+.hint{all:unset;box-sizing:border-box;cursor:help;width:20px;height:20px;border:1.5px solid currentColor;border-radius:50%;display:inline-grid;place-items:center;font:700 11px/1 var(--ui);color:#a7a59b;vertical-align:middle;flex:none;padding:0 0 1px 1.5px}
+.hint:hover,.hint:focus-visible,.hint[aria-expanded=true]{color:var(--ink)}
+#tipbox{position:fixed;z-index:100;max-width:230px;background:#171717;color:#fff;border-radius:7px;padding:6px 9px;font:700 13px/1.3 Lato,var(--ui);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.2);opacity:0;visibility:hidden;transition:opacity .12s;pointer-events:none}
+#tipbox.on{opacity:1;visibility:visible}
+
+.page{max-width:1240px;margin:0 auto;padding:22px 20px 64px}
+h1{margin:0 0 6px;font:900 28px/1.1 var(--ui);letter-spacing:-.01em}
+.lead{margin:0 0 22px;color:var(--muted);font:400 15px/1.45 var(--text);max-width:640px}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+@media(max-width:1079px){.cols{grid-template-columns:minmax(0,1fr);max-width:620px;margin-inline:auto}}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 8px}
+.sec h2{margin:0;text-align:center;font:800 14px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase}
+.sec .sub{margin:6px 0 10px;text-align:center;color:var(--muted);font:400 13px/1.3 var(--ui)}
+ol{list-style:none;margin:0;padding:0}
+li{display:flex;gap:12px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.art{flex:none;width:52px;height:52px;border-radius:8px;background:#e9e4d3 center/cover no-repeat;border:1px solid var(--line)}
+.t{min-width:0;flex:1}
+.t .ti{color:var(--ink);display:block;font:700 15px/1.25 var(--ui);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.t span{display:block;font:400 13px/1.3 var(--ui);color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.d{flex:none;text-align:right;font:700 12px/1.3 var(--ui);color:var(--muted)}
+.d b{display:block;color:var(--ink);font-weight:700}
+.pl{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--ink);background:none;color:var(--ink);cursor:pointer;padding:0}.pl:hover,.pl[aria-expanded=true]{background:var(--ink);color:var(--card)}.pl svg{width:12px;height:12px;margin-left:2px;fill:currentColor}.pl[aria-expanded=true] svg{margin-left:0}
+li{flex-wrap:wrap}.pw{flex:0 0 100%;padding:2px 0 4px}.pw iframe{display:block;width:100%;height:175px;border:0;border-radius:10px;overflow:hidden;background:transparent}.pm{margin:0;padding:8px 2px;font:400 13px/1.35 var(--ui);color:var(--muted)}
+.foot{margin-top:22px;color:var(--muted);font:400 13px/1.4 var(--ui)}
+</style></head><body>
+<header class="top"><a class="mark" href="index.html">Miguel PG</a><nav aria-label="Main"><a href="index.html">Home</a><a href="funstuff.html" aria-current="page">Fun Stuff</a></nav></header>
+<main class="page"><h1>First Spin</h1>
+<p class="lead">The songs I found most recently, the ones I liked enough to play again, and the ones that made it to ten plays.</p>
+<div class="cols" id="cols"></div>
+<p class="foot" id="foot"></p></main>
+<script>
+const D={"discovered": [{"title": "Who Do You Call", "artist": "Yinka Bernie", "album": "Something New", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/d6dd84e35f37470817ad351cfe3a058a.jpg", "when": 1795375476, "plays": 1}, {"title": "Djaliya", "artist": "Ablaye Cissoko", "album": "Djaliya", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/67b119a31d5b4b94cb5149d51b381069.jpg", "when": 1795375089, "plays": 1}, {"title": "Sasi Jaiva", "artist": "MISHY KOPE", "album": "Sasi Jaiva", "when": 1795374650, "plays": 1}, {"title": "Ndakaaru", "artist": "sahad", "album": "Ndakaaru", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/1c43f3d4a0cea225845b8edce674a766.jpg", "when": 1795374365, "plays": 1}, {"title": "Gozar Timbero", "artist": "Tito Puente", "album": "Lo Mejor De Lo Mejor", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/f40a00b6ebbb48d69fae00d4570734f1.jpg", "when": 1795298699, "plays": 1}, {"title": "Pata Pata", "artist": "Tito Puente", "album": "The King", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/32862e6f973002c9b0a585b490afabbe.jpg", "when": 1795298452, "plays": 1}, {"title": "El Fin del Mundo", "artist": "La La Love You", "album": "La la Love You Bonus", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/d494ec85c4aea880844830643617bcc5.jpg", "when": 1795297741, "plays": 1}, {"title": "The Blarney Pilgrim / John Ryan's Polka - From \"The Titanic\"", "artist": "Alban Fuam", "album": "Whiskey 'n Beer (12 Most Popular Irish and Celtic Folk Traditional Songs Performed on Violins, Bodhran, Irish Guitars, Tin Whistle Flute and Vocals)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/09872b0ad45083d14c6b7910119aa040.jpg", "when": 1795296132, "plays": 1}, {"title": "Umoya Wethu", "artist": "Tanner Wareham", "album": "Umoya Wethu", "when": 1795281884, "plays": 1}, {"title": "Laduma", "artist": "Hot Water", "album": "South", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/b2c0ca66f90aadcfa785d4d16411b173.jpg", "when": 1795248193, "plays": 1}, {"title": "Zulu (The Atomic Era)", "artist": "Geoff Knorr", "album": "Sid Meier's Civilization VI (Original Game Soundtrack)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/83f1938af41cf6e9479841105063f6a0.jpg", "when": 1795244705, "plays": 1}, {"title": "Mar (Lo Que Siento)", "artist": "Bomba Estéreo", "album": "Amanecer", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/66491ae2172bb003bb8b4f740a66ef0a.jpg", "when": 1795216443, "plays": 1}], "returned": [{"title": "Home", "artist": "Nsikak David", "album": "Strings of Solace", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/0d0253a59fdd841a1521e2f8f3f4ca35.jpg", "when": 1795374900, "plays": 2}, {"title": "Vida Loca - A COLORS SHOW", "artist": "Ca7riel & Paco Amoroso", "album": "Vida Loca (A COLORS SHOW)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/dad8ebbda5653e82f5b00fb3545a5808.jpg", "when": 1795300666, "plays": 2}, {"title": "Reel for Rubik / Toward the Sun", "artist": "Flook", "album": "Ancora", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/7fb7842465f54456785e6d1ed2f3fd5f.jpg", "when": 1795296896, "plays": 2}, {"title": "Zithande", "artist": "Freshlyground", "album": "Nomvula", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/60822c7c0b984bfb9cf7e1d18419b494.jpg", "when": 1795281607, "plays": 2}, {"title": "Vámonos De Viaje - Bachata Remix, 12-12-2022", "artist": "Bandalos Chinos", "album": "Feliz Navibach (Vol. II)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/bf45f17127d138aaecdff35a9e2a2608.jpg", "when": 1795278630, "plays": 2}, {"title": "Hamba Nathi", "artist": "Overtone", "album": "Invictus (Original Motion Picture Soundtrack)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/696d43aefaafa6abbfe3fb6798141407.jpg", "when": 1795247515, "plays": 2}, {"title": "Shosholoza", "artist": "Overtone", "album": "Frequency", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/742dd319999b6ccc3addc712fe9336c2.jpg", "when": 1795244863, "plays": 3}, {"title": "Spain \"Marcha Real\"", "artist": "Slovak Radio Symphony Orchestra", "album": "Die 32 Nationalhymnen: Der Fußball-Weltmeisterschafts-Endrunde 2006", "when": 1795216032, "plays": 2}, {"title": "Maori (The Industrial Era)", "artist": "Geoff Knorr", "album": "Sid Meier's Civilization VI (Original Game Soundtrack)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/83f1938af41cf6e9479841105063f6a0.jpg", "when": 1795146454, "plays": 5}, {"title": "Maori (The Ancient Era)", "artist": "The Te Tini a Maui Kapa Haka Group", "album": "Sid Meier's Civilization VI (Original Game Soundtrack)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/83f1938af41cf6e9479841105063f6a0.jpg", "when": 1795146132, "plays": 3}, {"title": "The Crossing", "artist": "Overtone", "album": "Invictus (Original Motion Picture Soundtrack)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/696d43aefaafa6abbfe3fb6798141407.jpg", "when": 1795136904, "plays": 2}, {"title": "Where Are You Now?", "artist": "Jungle", "album": "Sunshine", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/c81733fcc0f430f5c20f97a7b697c6c9.jpg", "when": 1795092640, "plays": 2}], "ten": [{"title": "Doo Be Doo", "artist": "Freshlyground", "album": "Nomvula", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/60822c7c0b984bfb9cf7e1d18419b494.jpg", "when": 1795299930, "plays": 10}, {"title": "New Zealand National Anthem", "artist": "Cindy Ruakere", "album": "Karakia", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/1a81607add54ea9a82e8ce1f0a7008e1.jpg", "when": 1795148969, "plays": 20}, {"title": "Cruel Crazy Beautiful World", "artist": "Johnny Clegg", "album": "Cruel Crazy Beautiful World", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/6ad0d71ad0096b72c3ed3fa890bf788a.jpg", "when": 1795090324, "plays": 10}, {"title": "Katachi", "artist": "Shugo Tokumaru", "album": "In Focus?", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/e54da4e0a30acc76cfa9dcc40443390a.jpg", "when": 1794673046, "plays": 10}, {"title": "Click Song Number One - Mono Version", "artist": "Miriam Makeba", "album": "Pata Pata", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/b368bb98a7e97b6003cb455a135e124b.jpg", "when": 1794610517, "plays": 19}, {"title": "Maori (The Atomic Era)", "artist": "Geoff Knorr", "album": "Sid Meier's Civilization VI (Original Game Soundtrack)", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/83f1938af41cf6e9479841105063f6a0.jpg", "when": 1794336290, "plays": 33}, {"title": "Canadian Railroad Trilogy", "artist": "Gordon Lightfoot", "album": "Gord's Gold", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/9a812c589ef2493a8d3608f846784894.png", "when": 1794307439, "plays": 12}, {"title": "Es Por Ti", "artist": "Juanes", "album": "Un Día Normal", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/a297e316165a4b118828905e67954e56.png", "when": 1794236095, "plays": 12}, {"title": "Dial 143", "artist": "Jomm", "album": "LOVELY!!!", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/cd726733961e886aa4739e8a75876ff8.jpg", "when": 1794197944, "plays": 10}, {"title": "Papillon", "artist": "Voyou", "album": "Les bruits de la ville", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/1d1474c9fd5e70da985aec8e8fb74cb2.jpg", "when": 1793879998, "plays": 16}, {"title": "A T A R A X I A", "artist": "La Casa Azul", "album": "La Gran Esfera", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/61d48183151119c9fa7fd15b080cee49.jpg", "when": 1793798929, "plays": 19}, {"title": "Volando Voy - Rumba", "artist": "Camaron De La Isla", "album": "Autorretrato", "art": "https://lastfm-img.freetls.fastly.net/i/u/174s/5ff3f556553c435187ffcc44dea36a40.jpg", "when": 1793796246, "plays": 12}], "totals": {"scrobbles": 112486, "songs": 29594, "from": 1572044881, "to": 1795810390}};
+const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt=u=>{const d=new Date(u*1000);return M[d.getMonth()]+' '+d.getDate()+(d.getFullYear()!==new Date().getFullYear()?', '+d.getFullYear():'')};
+const S=[['discovered','Just discovered','First time I ever played them',0],['returned','Came back to','A second listen on a later day',1],['ten','Ten plays','Played ten times or more',2]];
+
+/* The player opens inside the page. Nothing is contacted until someone presses a play button. */
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\([^)]*\)|\[[^\]]*\]/g,' ').replace(/\s[-\u2013\u2014].*$/,' ').replace(/[^a-z0-9\u00c0-\uffff ]+/g,' ').replace(/\s+/g,' ').trim();
+const toks=s=>norm(s).split(' ').filter(w=>w.length>1&&!['the','and','feat','ft'].includes(w));
+function best(list,x){
+  const T=norm(x.title),A=toks(x.artist);
+  for(const r of list){
+    if(!r||!r.trackViewUrl||!r.trackName)continue;
+    const rt=norm(r.trackName),ra=norm(r.artistName||'');
+    const titleOk=rt===T||(T.length>3&&(rt.startsWith(T)||T.startsWith(rt)));
+    const artistOk=!A.length||A.some(w=>ra.includes(w));
+    if(titleOk&&artistOk)return r;
+  }
+  return null;
+}
+function jsonp(u){return new Promise((ok,no)=>{const n='_as'+Math.random().toString(36).slice(2),s=document.createElement('script'),done=()=>{delete window[n];s.remove()};
+  window[n]=d=>{done();ok(d)};s.onerror=()=>{done();no(new Error('jsonp'))};setTimeout(()=>{if(window[n]){done();no(new Error('timeout'))}},8000);
+  s.src=u+'&callback='+n;document.head.appendChild(s)})}
+const cache={};
+async function lookup(x){
+  const k=x.artist+'|'+x.title;if(k in cache)return cache[k];
+  const q=encodeURIComponent(x.artist+' '+x.title);
+  const base='https://itunes.apple.com/search?media=music&entity=song&limit=8&term='+q;
+  let j;
+  try{const r=await fetch(base);if(!r.ok)throw new Error('lookup');j=await r.json()}
+  catch(e){j=await jsonp(base)}  /* some browsers or networks block the plain request; Apple's search also answers as a script */const hit=best(j.results||[],x);
+  let url=null;
+  if(hit){try{const u=new URL(hit.trackViewUrl);if(/(^|\.)apple\.com$/.test(u.hostname)){const id=u.searchParams.get('i');u.hostname='embed.music.apple.com';u.protocol='https:';u.search=id?'?i='+encodeURIComponent(id):'';url=u.toString()}}catch(e){}}
+  return cache[k]=url;
+}
+let openRow=null;
+const closePlayer=()=>{if(typeof closeRow==='function')closeRow()};
+function closeRow(){if(!openRow)return;const w=openRow.li.querySelector('.pw');if(w)w.remove();openRow.btn.setAttribute('aria-expanded','false');openRow=null}
+async function toggle(li,btn,x){
+  if(openRow&&openRow.li===li){closeRow();return}
+  closeRow();
+  const w=document.createElement('div');w.className='pw';li.appendChild(w);
+  btn.setAttribute('aria-expanded','true');openRow={li,btn};
+  const say=m=>{w.textContent='';const p=document.createElement('p');p.className='pm';p.textContent=m;w.appendChild(p)};
+  say('Finding it\u2026');
+  try{
+    const url=await lookup(x);
+    if(!openRow||openRow.li!==li)return;
+    if(!url){say('I couldn\u2019t find this one on Apple Music.');return}
+    w.textContent='';
+    const f=document.createElement('iframe');f.src=url;f.title='Apple Music player: '+x.title;f.height='175';
+    f.allow='autoplay *; encrypted-media *; fullscreen *; clipboard-write';
+    f.setAttribute('sandbox','allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation');
+    w.appendChild(f);
+  }catch(e){if(openRow&&openRow.li===li)say('The player couldn\u2019t load right now. Try again in a moment.')}
+}
+const cols=document.getElementById('cols');
+function render(D){
+closePlayer();cols.textContent='';
+S.forEach(([k,h,sub,mode])=>{
+  const s=document.createElement('section');s.className='sec';
+  s.innerHTML='<h2></h2><p class="sub"></p><ol></ol>';
+  s.querySelector('h2').textContent=h;s.querySelector('.sub').textContent=sub;
+  const ol=s.querySelector('ol');
+  (D[k]||[]).forEach(x=>{
+    const li=document.createElement('li'),a=document.createElement('div');a.className='art';
+    if(x.art&&/^https:\/\/lastfm-img2?\.|^https:\/\/lastfm\.freetls\./.test(x.art))a.style.backgroundImage='url("'+x.art+'")';
+    const t=document.createElement('div');t.className='t';
+    const l=document.createElement('span');l.className='ti';
+    l.textContent=x.title;const by=document.createElement('span');by.textContent=x.artist;
+    t.append(l,by);
+    const d=document.createElement('div');d.className='d';
+    d.innerHTML='<b></b><i></i>';d.querySelector('b').textContent=fmt(x.when);
+    d.querySelector('i').textContent=mode===0?'':(x.plays+' plays so far');d.querySelector('i').style.fontStyle='normal';
+    const pl=document.createElement('button');pl.type='button';pl.className='pl';pl.setAttribute('aria-expanded','false');pl.setAttribute('aria-label','Play '+x.title+' by '+x.artist);
+    pl.innerHTML='<svg viewBox="0 0 10 12" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg>';
+    pl.addEventListener('click',()=>toggle(li,pl,x));
+    li.append(a,t,d,pl);ol.appendChild(li);
+  });
+  cols.appendChild(s);
+});
+if(D.totals)document.getElementById('foot').textContent='Counted from '+D.totals.songs.toLocaleString()+' different songs since '+new Date(D.totals.from*1000).getFullYear()+'.';
+}
+render(D);
+/* the live lists, kept current by the Worker; the copy baked into the page above is the fallback */
+fetch('https://subway-update.miguelpg603.workers.dev/songs').then(r=>r.ok?r.json():Promise.reject()).then(j=>{if(j&&j.ok&&j.discovered)render(j)}).catch(()=>{});
+</script></body></html>
